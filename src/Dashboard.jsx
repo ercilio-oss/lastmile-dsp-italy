@@ -44,11 +44,16 @@ function LeafletMap({ sites, selectedSite, onSiteClick, defectFilter, hoveredSit
       attributionControl: true,
     });
 
-    // Stadia Alidade Smooth Dark — free, no key, CSP-friendly
-    L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 20,
-      crossOrigin: true,
+    // ESRI World Dark Gray Base — free, no API key required
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
+      attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+      maxZoom: 16,
+    }).addTo(map);
+
+    // ESRI reference labels layer on top
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}", {
+      maxZoom: 16,
+      opacity: 0.8,
     }).addTo(map);
 
     mapInstanceRef.current = map;
