@@ -1,8 +1,149 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, AreaChart, Area, ReferenceLine, ComposedChart
 } from "recharts";
+
+// ─── LEAFLET MAP COMPONENT ───────────────────────────────────────────
+function LeafletMap({ sites, selectedSite, onSiteClick, defectFilter, hoveredSite, onSiteHover }) {
+  const mapRef = useRef(null);
+  const leafletRef = useRef(null);
+  const markersRef = useRef({});
+  const mapInstanceRef = useRef(null);
+  const [leafletReady, setLeafletReady] = useState(false);
+
+  // Load Leaflet CSS + JS from CDN once
+  useEffect(() => {
+    if (window.L) { setLeafletReady(true); return; }
+
+    // Inject CSS
+    if (!document.getElementById("leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "leaflet-css";
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+
+    // Inject JS
+    const script = document.createElement("script");
+    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+    script.onload = () => setLeafletReady(true);
+    document.head.appendChild(script);
+  }, []);
+
+  // Initialize map once Leaflet is ready and container is mounted
+  useEffect(() => {
+    if (!leafletReady || !mapRef.current || mapInstanceRef.current) return;
+    const L = window.L;
+
+    const map = L.map(mapRef.current, {
+      center: [42.5, 12.5],
+      zoom: 6,
+      zoomControl: true,
+      attributionControl: true,
+    });
+
+    // Stadia Alidade Smooth Dark — free, no key, CSP-friendly
+    L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      maxZoom: 20,
+      crossOrigin: true,
+    }).addTo(map);
+
+    mapInstanceRef.current = map;
+    leafletRef.current = L;
+  }, [leafletReady]);
+
+  // Update markers when data/filter changes
+  useEffect(() => {
+    if (!mapInstanceRef.current || !leafletRef.current) return;
+    const L = leafletRef.current;
+    const map = mapInstanceRef.current;
+
+    // Remove old markers
+    Object.values(markersRef.current).forEach(m => map.removeLayer(m));
+    markersRef.current = {};
+
+    const DEPOT_C = { UIT4:"#f59e0b", UIT1:"#22c55e", UBA1:"#3b82f6", UIL7:"#a855f7" };
+    const COORDS  = { UIT4:[41.90, 12.49], UIT1:[45.46, 9.19], UBA1:[44.49, 11.34], UIL7:[41.47, 12.90] };
+
+    const maxCount = Math.max(...sites.map(s => {
+      return defectFilter.reduce((sum, dt) => sum + (s.defects[dt] || 0), 0);
+    }));
+
+    sites.forEach(site => {
+      const filtCount = defectFilter.reduce((sum, dt) => sum + (site.defects[dt] || 0), 0);
+      const radius = Math.max(12, (filtCount / maxCount) * 55);
+      const color = DEPOT_C[site.key] || "#8b5cf6";
+      const isSel = selectedSite === site.key;
+      const isHov = hoveredSite === site.key;
+      const coords = COORDS[site.key];
+      if (!coords) return;
+
+      const circle = L.circleMarker(coords, {
+        radius,
+        fillColor: color,
+        color: isSel ? "#fff" : color,
+        weight: isSel ? 3 : 1.5,
+        opacity: 1,
+        fillOpacity: isSel ? 0.85 : isHov ? 0.7 : 0.5,
+      });
+
+      // Tooltip
+      circle.bindTooltip(`
+        <div style="font-family:monospace;font-size:12px;line-height:1.6;padding:4px;">
+          <strong style="color:${color}">${site.key}</strong> — ${site.label}<br/>
+          <span style="color:#aaa">Defects:</span> <strong>${filtCount.toLocaleString()}</strong><br/>
+          ${defectFilter.map(dt => `<span style="color:#888">${dt}:</span> ${site.defects[dt]||0}`).join("  ")}
+        </div>`, { permanent:false, direction:"top", className:"leaflet-dsptip" });
+
+      circle.on("click", () => onSiteClick(site.key));
+      circle.on("mouseover", () => onSiteHover(site.key));
+      circle.on("mouseout",  () => onSiteHover(null));
+
+      // Station label
+      const label = L.divIcon({
+        html: `<div style="font-family:monospace;font-size:11px;font-weight:700;color:${color};text-shadow:0 1px 3px #000,0 0 8px #000;white-space:nowrap;pointer-events:none">${site.key}<br><span style="font-size:9px;color:#ccc">${filtCount}</span></div>`,
+        className: "",
+        iconAnchor: [-radius - 4, radius / 2],
+      });
+      const labelMarker = L.marker(coords, { icon: label, interactive: false });
+
+      circle.addTo(map);
+      labelMarker.addTo(map);
+      markersRef.current[site.key] = { circle, labelMarker };
+    });
+  }, [leafletReady, sites, selectedSite, defectFilter, hoveredSite]);
+
+  // Cleanup on unmount
+  useEffect(() => () => {
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
+  }, []);
+
+  return (
+    <div style={{ position: "relative", height: "100%", minHeight: 360 }}>
+      {!leafletReady && (
+        <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"#0a0f1a",zIndex:10,borderRadius:10 }}>
+          <div style={{ fontSize:11,color:"#475569",fontFamily:"'DM Mono',monospace" }}>Loading map…</div>
+        </div>
+      )}
+      <div ref={mapRef} style={{ width:"100%", height:"100%", minHeight:360, borderRadius:10 }}/>
+      <style>{`
+        .leaflet-dsptip { background:#0f172a!important; border:1px solid #334155!important; border-radius:6px!important; color:#e2e8f0!important; box-shadow:0 8px 32px rgba(0,0,0,0.6)!important; }
+        .leaflet-dsptip::before { border-top-color:#334155!important; }
+        .leaflet-container { background:#030712!important; }
+        .leaflet-bar a { background:#0f172a!important; color:#e2e8f0!important; border-color:#334155!important; }
+        .leaflet-bar a:hover { background:#1e293b!important; }
+        .leaflet-control-attribution { background:#0a0f1a!important; color:#334155!important; font-size:8px!important; }
+        .leaflet-control-attribution a { color:#475569!important; }
+      `}</style>
+    </div>
+  );
+}
 
 // ─── RESPONSIVE HOOK ────────────────────────────────────────────────
 function useIsMobile(breakpoint = 768) {
@@ -61,6 +202,18 @@ const T = {
     minCombined: "Min combined", severity: "Severity", defectMix: "Defect Mix",
     ncc: "NCC", late: "Late", latePlus15Label: "Late +15",
     severityLegend: "Severity: CRITICAL = 15+ GT15 defects · HIGH = 40+ combined · MEDIUM = 20+ combined",
+    tabGeo: "Geo View",
+    geoTitle: "Defects by Site & Attribution",
+    geoMap: "Defect Map — Italy",
+    geoFilter: "Defect Type Filter",
+    geoAttribTable: "Defect × Attribution",
+    geoDriverMatrix: "Driver Defect Matrix",
+    geoTotal: "Total",
+    geoAllDefects: "All Defect Types",
+    // Flow
+    tabFlow: "Defect Flow", flowSnap: "W8 2026 Snapshot", flowInstr: "← Click to drill down: defect → attribution → site → driver",
+    flowDefectType: "Defect Type", flowAttribution: "Root Cause", flowSite: "Site", flowDriver: "Driver",
+    flowSelectHint: "Select a defect type to explore root causes",
     // Footer
     footer: "LAST MILE DSP ITALY", generated: "GENERATED",
     // Shared
@@ -99,6 +252,17 @@ const T = {
     minCombined: "Min combinati", severity: "Gravità", defectMix: "Mix Difetti",
     ncc: "NCC", late: "Ritardo", latePlus15Label: "Ritardo +15",
     severityLegend: "Gravità: CRITICO = 15+ difetti GT15 · ALTO = 40+ combinati · MEDIO = 20+ combinati",
+    tabGeo: "Vista Geo",
+    geoTitle: "Difetti per Stazione e Attribuzione",
+    geoMap: "Mappa Difetti — Italia",
+    geoFilter: "Filtro Tipo Difetto",
+    geoAttribTable: "Difetto × Attribuzione",
+    geoDriverMatrix: "Matrice Difetti Autisti",
+    geoTotal: "Totale",
+    geoAllDefects: "Tutti i Tipi",
+    tabFlow: "Flusso Difetti", flowSnap: "Snapshot S8 2026", flowInstr: "← Clicca per esplorare: difetto → causa → stazione → autista",
+    flowDefectType: "Tipo Difetto", flowAttribution: "Causa Radice", flowSite: "Stazione", flowDriver: "Autista",
+    flowSelectHint: "Seleziona un tipo di difetto per esplorare le cause",
     footer: "ULTIMO MIGLIO DSP ITALIA", generated: "GENERATO",
     defects: "difetti", across: "su",
   },
@@ -135,6 +299,17 @@ const T = {
     minCombined: "Mín combinados", severity: "Severidad", defectMix: "Mix Defectos",
     ncc: "NCC", late: "Retraso", latePlus15Label: "Retraso +15",
     severityLegend: "Severidad: CRÍTICO = 15+ defectos GT15 · ALTO = 40+ combinados · MEDIO = 20+ combinados",
+    tabGeo: "Vista Geo",
+    geoTitle: "Defectos por Sitio y Atribución",
+    geoMap: "Mapa Defectos — Italia",
+    geoFilter: "Filtro Tipo Defecto",
+    geoAttribTable: "Defecto × Atribución",
+    geoDriverMatrix: "Matriz Defectos Conductores",
+    geoTotal: "Total",
+    geoAllDefects: "Todos los Tipos",
+    tabFlow: "Flujo Defectos", flowSnap: "Instantánea S8 2026", flowInstr: "← Clic para profundizar: defecto → atribución → sitio → conductor",
+    flowDefectType: "Tipo Defecto", flowAttribution: "Causa Raíz", flowSite: "Sitio", flowDriver: "Conductor",
+    flowSelectHint: "Selecciona un tipo de defecto para explorar causas",
     footer: "ÚLTIMA MILLA DSP ITALIA", generated: "GENERADO",
     defects: "defectos", across: "en",
   }
@@ -184,7 +359,6 @@ const NETWORK = [
   { year:2026,week:"W5",late:3.56,fond:1.80,pdnr:0.57,ftfdf:2.92,ftfdfOC:1.80 },
   { year:2026,week:"W6",late:5.01,fond:2.60,pdnr:0.50,ftfdf:3.69,ftfdfOC:2.60 },
   { year:2026,week:"W7",late:3.44,fond:1.72,pdnr:0.67,ftfdf:null,ftfdfOC:1.72 },
-  { year:2026,week:"W8",late:2.84,fond:1.66,pdnr:0.55,ftfdf:2.84,ftfdfOC:1.66 },
 ];
 
 // ─── ALL DEPOT DATA (with year) ────────────────────────────────────
@@ -230,7 +404,6 @@ const ALL_DEPOT_DATA = {
     {year:2026,week:"W5",late:4.19,fondCtrl:2.32,ftfdf:3.42,pdnr:0.84,fdnr:0.24,ftdc:0.18,pondFP:0.79,pondPP:1.59,ftpdf:2.47},
     {year:2026,week:"W6",late:6.34,fondCtrl:2.75,ftfdf:3.91,pdnr:0.62,fdnr:0.13,ftdc:0.37,pondFP:0.47,pondPP:1.42,ftpdf:2.02},
     {year:2026,week:"W7",late:3.66,fondCtrl:1.25,ftfdf:2.61,pdnr:0.85,fdnr:0.22,ftdc:0.16,pondFP:0.51,pondPP:1.23,ftpdf:1.83},
-    {year:2026,week:"W8",late:3.45,fondCtrl:1.59,ftfdf:2.91,pdnr:0.76,fdnr:0.22,ftdc:0.09,pondFP:0.54,pondPP:1.19,ftpdf:1.84},
   ],
   UIT1: [
     // 2025
@@ -273,7 +446,6 @@ const ALL_DEPOT_DATA = {
     {year:2026,week:"W5",late:1.51,fondCtrl:1.13,ftfdf:2.53,pdnr:0.24,fdnr:0.10,ftdc:null,pondFP:0.21,pondPP:0.38,ftpdf:0.62},
     {year:2026,week:"W6",late:3.09,fondCtrl:2.24,ftfdf:3.37,pdnr:0.35,fdnr:0.11,ftdc:0.07,pondFP:0.25,pondPP:0.53,ftpdf:0.81},
     {year:2026,week:"W7",late:1.91,fondCtrl:1.63,ftfdf:3.12,pdnr:0.43,fdnr:0.07,ftdc:0.11,pondFP:0.21,pondPP:0.43,ftpdf:0.64},
-    {year:2026,week:"W8",late:1.80,fondCtrl:1.35,ftfdf:2.47,pdnr:0.22,fdnr:0.04,ftdc:0.11,pondFP:0.34,pondPP:0.49,ftpdf:0.86},
   ],
   UIT7: [
     // 2025
@@ -307,9 +479,6 @@ const ALL_DEPOT_DATA = {
     {year:2026,week:"W3",late:3.22,fondCtrl:0.46,ftfdf:1.66,pdnr:0.46,fdnr:null,ftdc:null,pondFP:0.09,pondPP:0.64,ftpdf:0.74},
     {year:2026,week:"W4",late:1.29,fondCtrl:0.45,ftfdf:1.19,pdnr:0.32,fdnr:null,ftdc:null,pondFP:0.11,pondPP:0.22,ftpdf:0.32},
     {year:2026,week:"W5",late:4.46,fondCtrl:1.78,ftfdf:2.67,pdnr:0.59,fdnr:0.15,ftdc:null,pondFP:0.30,pondPP:0.59,ftpdf:1.19},
-    {year:2026,week:"W6",late:null,fondCtrl:null,ftfdf:null,pdnr:null,fdnr:null,ftdc:null,pondFP:null,pondPP:null,ftpdf:null},
-    {year:2026,week:"W7",late:null,fondCtrl:null,ftfdf:null,pdnr:null,fdnr:null,ftdc:null,pondFP:null,pondPP:null,ftpdf:null},
-    {year:2026,week:"W8",late:null,fondCtrl:null,ftfdf:null,pdnr:null,fdnr:null,ftdc:null,pondFP:null,pondPP:null,ftpdf:null},
   ],
   UBA1: [
     // 2025
@@ -349,7 +518,6 @@ const ALL_DEPOT_DATA = {
     {year:2026,week:"W5",late:5.38,fondCtrl:1.15,ftfdf:1.92,pdnr:0.13,fdnr:0.13,ftdc:null,pondFP:0.77,pondPP:1.02,ftpdf:1.92},
     {year:2026,week:"W6",late:4.13,fondCtrl:4.13,ftfdf:4.65,pdnr:0.52,fdnr:0.52,ftdc:null,pondFP:0.52,pondPP:0.52,ftpdf:1.03},
     {year:2026,week:"W7",late:8.81,fondCtrl:6.25,ftfdf:7.05,pdnr:0.48,fdnr:0.48,ftdc:0.16,pondFP:0.16,pondPP:0.16,ftpdf:0.48},
-    {year:2026,week:"W8",late:2.39,fondCtrl:3.83,ftfdf:4.78,pdnr:0.48,fdnr:0.32,ftdc:null,pondFP:0.80,pondPP:null,ftpdf:0.80},
   ],
   UIL7: [
     // 2025
@@ -372,7 +540,6 @@ const ALL_DEPOT_DATA = {
     {year:2026,week:"W5",late:5.40,fondCtrl:0.36,ftfdf:0.72,pdnr:null,fdnr:null,ftdc:null,pondFP:null,pondPP:0.36,ftpdf:0.36},
     {year:2026,week:"W6",late:4.42,fondCtrl:1.20,ftfdf:1.36,pdnr:null,fdnr:null,ftdc:null,pondFP:0.34,pondPP:null,ftpdf:0.34},
     {year:2026,week:"W7",late:3.13,fondCtrl:0.35,ftfdf:2.43,pdnr:0.69,fdnr:null,ftdc:null,pondFP:0.35,pondPP:0.69,ftpdf:1.39},
-    {year:2026,week:"W8",late:4.37,fondCtrl:0.79,ftfdf:0.79,pdnr:0.40,fdnr:null,ftdc:null,pondFP:0.40,pondPP:0.79,ftpdf:1.19},
   ],
 };
 
@@ -589,7 +756,153 @@ const NCC_TID_MAP = {
   "ID:A1NIE3GKC42IM":"A1NIE3GKC42IME","Dolofan, Florin":"A5RCJALTYW9J7",
 };
 
-// ─── HELPERS ────────────────────────────────────────────────────────
+// ─── DEFECT FLOW SNAPSHOT (W8 2026) ─────────────────────────────────
+const FLOW_W8 = {
+  week: "W8 2026",
+  ordersTotal: 7982,
+  ordersWithDefects: 613,
+  pctDef: 8,
+  pctOk: 92,
+  totalDefects: 633,
+  defectTypes: [
+    { key:"ftfdf",    label:"_ftfdf",    count:228, pct:2.86 },
+    { key:"late_gt15",label:"_late15",   count:228, pct:2.86 },
+    { key:"ftpdf",    label:"_ftpdf",    count:113, pct:1.42 },
+    { key:"pdnr",     label:"_pdnr",     count:44,  pct:0.55 },
+    { key:"fdnr",     label:"_fdnr",     count:13,  pct:0.16 },
+    { key:"ftdc",     label:"_ftdc",     count:7,   pct:0.09 },
+  ],
+  attributions: {
+    late_gt15: [
+      { key:"pickup_delay",    label:"Pickup Delay",                count:165, sites:{UIT4:134,UIT1:23,UBA1:6,UIL7:2} },
+      { key:"root_cause",      label:"** Root Cause Unattributed",  count:22,  sites:{UIT4:18,UIT1:3,UBA1:1} },
+      { key:"assign_delay",    label:"Assignment Delay - Other",    count:19,  sites:{UIT4:16,UIT1:2,UBA1:1} },
+      { key:"otr_route",       label:"OTR - Route Non Compliant",   count:16,  sites:{UIT4:13,UIT1:2,UIL7:1} },
+      { key:"late_batch",      label:"Late Batch Ops Controllable", count:3,   sites:{UIT4:2,UIT1:1} },
+      { key:"otr_others",      label:"OTR - Others",                count:3,   sites:{UIT4:3} },
+    ],
+    ftfdf: [
+      { key:"upstream",        label:"Upstream — Carrier/Seller",   count:142, sites:{UIT4:91,UIT1:29,UBA1:19,UIL7:3} },
+      { key:"pickup_delay",    label:"Pickup Delay",                count:52,  sites:{UIT4:35,UIT1:12,UBA1:5} },
+      { key:"dsp_other",       label:"DSP — Other",                 count:34,  sites:{UIT4:22,UIT1:8,UBA1:4} },
+    ],
+    ftpdf: [
+      { key:"upstream",        label:"Upstream — Carrier/Seller",   count:78,  sites:{UIT4:52,UIT1:18,UBA1:8} },
+      { key:"pickup_delay",    label:"Pickup Delay",                count:21,  sites:{UIT4:15,UIT1:4,UBA1:2} },
+      { key:"dsp_other",       label:"DSP — Other",                 count:14,  sites:{UIT4:9,UIT1:3,UBA1:2} },
+    ],
+    pdnr: [
+      { key:"upstream",        label:"Upstream",                    count:28,  sites:{UIT4:20,UIT1:6,UBA1:2} },
+      { key:"dsp_ctrl",        label:"DSP Controllable",            count:16,  sites:{UIT4:12,UIT1:3,UIL7:1} },
+    ],
+    fdnr: [
+      { key:"upstream",        label:"Upstream",                    count:9,   sites:{UIT4:7,UIT1:2} },
+      { key:"dsp_ctrl",        label:"DSP Controllable",            count:4,   sites:{UIT4:3,UIT1:1} },
+    ],
+    ftdc: [
+      { key:"dsp_ctrl",        label:"DSP Controllable",            count:5,   sites:{UIT4:4,UIT1:1} },
+      { key:"other",           label:"Other",                       count:2,   sites:{UIT4:2} },
+    ],
+  },
+  drivers: {
+    "UIT4-pickup_delay": [
+      {name:"Marcelo, Chirico",count:13},{name:"Subhani, Shafqat",count:12},{name:"Arben, Selimaj",count:10},
+      {name:"Marrocchini, Mario",count:10},{name:"Medici, Sergio",count:9},{name:"Cau, Daniele",count:6},
+      {name:"Ornatelli, Massimiliano",count:6},{name:"Palma, Maicol",count:6},{name:"Parisi, Luca",count:6},
+      {name:"Ruggeri, Ruggero",count:6},{name:"Fernandes De Souza, Cayo",count:5},{name:"(Blank)",count:4},
+    ],
+    "UIT1-pickup_delay": [
+      {name:"Zandonato, Luiz Carlos",count:6},{name:"Dnibi, Walid",count:5},{name:"De Souza Nunes, Thassio",count:4},
+      {name:"Kumarsamy Perumal, Manoj A.",count:4},{name:"Maddalon, Tiago",count:4},
+    ],
+    "UBA1-pickup_delay": [
+      {name:"Dolofan, Florin",count:4},{name:"Da Silva Santos, Andre",count:2},
+    ],
+    "UIL7-pickup_delay": [
+      {name:"Rodriguez Quijije, Stefano D.",count:2},
+    ],
+    "UIT4-root_cause": [
+      {name:"Brahmi, Achraf",count:5},{name:"Torres, Miguel Angel",count:4},{name:"Moustafa, Mohamed",count:3},
+      {name:"Tawfiq, Nafia",count:3},{name:"Mitri, Giovanni",count:3},
+    ],
+    "UIT4-assign_delay": [
+      {name:"Marcelo, Chirico",count:4},{name:"Subhani, Shafqat",count:3},{name:"Medici, Sergio",count:3},
+      {name:"Palma, Maicol",count:3},{name:"Cau, Daniele",count:3},
+    ],
+    "UIT4-otr_route": [
+      {name:"Pozzi, Manuel",count:4},{name:"Torres, Miguel Angel",count:3},{name:"Mitri, Giovanni",count:3},{name:"Moustafa, Mohamed",count:3},
+    ],
+    "UIT4-upstream": [
+      {name:"Marcelo, Chirico",count:11},{name:"Subhani, Shafqat",count:10},{name:"Arben, Selimaj",count:9},
+      {name:"Marrocchini, Mario",count:8},{name:"Medici, Sergio",count:7},{name:"Palma, Maicol",count:6},
+      {name:"Cau, Daniele",count:6},{name:"Parisi, Luca",count:6},{name:"Ruggeri, Ruggero",count:5},
+      {name:"Ornatelli, Massimiliano",count:5},{name:"Fernandes De Souza, Cayo",count:4},
+    ],
+    "UIT1-upstream": [
+      {name:"Zandonato, Luiz Carlos",count:7},{name:"Dnibi, Walid",count:6},{name:"Kumarsamy Perumal, Manoj A.",count:5},
+      {name:"De Souza Nunes, Thassio",count:4},{name:"Maddalon, Tiago",count:4},{name:"Cimarosa, Mirko",count:3},
+    ],
+  },
+};
+
+// ─── GEO / Q-ORD DATA (2026 cumulative) ─────────────────────────────
+const GEO_DATA = {
+  year: "2026",
+  grandTotal: 2937,
+  defectTypes: ["late","late_gt15","ftfdf","ftpdf","pdnr","fdnr","ftdc"],
+  defectTotals: {
+    late:     { label:"late",     count:1455 },
+    late_gt15:{ label:"late_gt15",count:613  },
+    ftfdf:    { label:"ftfdf",    count:430  },
+    ftpdf:    { label:"ftpdf",    count:258  },
+    pdnr:     { label:"pdnr",     count:125  },
+    fdnr:     { label:"fdnr",     count:28   },
+    ftdc:     { label:"ftdc",     count:28   },
+  },
+  sites: [
+    { key:"UIT4", label:"Roma",    cx:115, cy:252, defects:{late:850,late_gt15:380,ftfdf:240,ftpdf:140,pdnr:72,fdnr:14,ftdc:16}, total:1712 },
+    { key:"UIT1", label:"Milano",  cx:72,  cy:52,  defects:{late:360,late_gt15:140,ftfdf:110,ftpdf:72,pdnr:36,fdnr:10,ftdc:8},  total:736  },
+    { key:"UBA1", label:"Bologna", cx:112, cy:115, defects:{late:185,late_gt15:72,ftfdf:60,ftpdf:32,pdnr:14,fdnr:3,ftdc:3},    total:369  },
+    { key:"UIL7", label:"Latina",  cx:120, cy:278, defects:{late:60,late_gt15:21,ftfdf:20,ftpdf:14,pdnr:3,fdnr:1,ftdc:1},     total:120  },
+  ],
+  attributions: [
+    { defect:"late",      attribution:"Pickup Delay",                            count:1204 },
+    { defect:"late_gt15", attribution:"Pickup Delay",                            count:531  },
+    { defect:"ftpdf",     attribution:"Non CSPU FTPDF PP - Object Missing Other",count:162  },
+    { defect:"ftfdf",     attribution:"Customer called CS",                      count:86   },
+    { defect:"ftfdf",     attribution:"Road closures",                           count:80   },
+    { defect:"pdnr",      attribution:"Unclear",                                 count:77   },
+    { defect:"ftfdf",     attribution:"Not call compliant",                       count:69   },
+    { defect:"late",      attribution:"OTR - Route Non Compliant",               count:65   },
+    { defect:"late",      attribution:"Late Batch Ops Controllable",             count:60   },
+    { defect:"ftfdf",     attribution:"Access issue/no safe location",           count:52   },
+    { defect:"late",      attribution:"Assignment Delay - Others",               count:51   },
+    { defect:"ftfdf",     attribution:"** Root cause attribution in progress",   count:43   },
+    { defect:"late_gt15", attribution:"Assignment Delay - Others",               count:40   },
+    { defect:"pdnr",      attribution:"Customer unavailable",                    count:28   },
+    { defect:"ftpdf",     attribution:"Pickup Delay",                            count:25   },
+    { defect:"late_gt15", attribution:"OTR - Route Non Compliant",               count:21   },
+    { defect:"fdnr",      attribution:"Customer unavailable",                    count:16   },
+    { defect:"ftdc",      attribution:"DSP controllable",                        count:18   },
+    { defect:"late",      attribution:"Access issue/no safe location",           count:15   },
+  ],
+  drivers: [
+    { name:"Medici, Sergio",          fdnr:2,  ftdc:2,  ftfdf:4,  ftpdf:60, late:40,  late_gt15:2,  pdnr:0,  total:110 },
+    { name:"Ruggeri, Ruggero",        fdnr:0,  ftdc:1,  ftfdf:9,  ftpdf:3,  late:60,  late_gt15:32, pdnr:4,  total:109 },
+    { name:"(Blank / Unknown)",       fdnr:0,  ftdc:0,  ftfdf:17, ftpdf:8,  late:49,  late_gt15:22, pdnr:4,  total:100 },
+    { name:"Marcelo, Chirico",        fdnr:0,  ftdc:2,  ftfdf:10, ftpdf:6,  late:48,  late_gt15:27, pdnr:1,  total:94  },
+    { name:"Subhani, Shafqat",        fdnr:0,  ftdc:1,  ftfdf:10, ftpdf:7,  late:50,  late_gt15:24, pdnr:2,  total:94  },
+    { name:"Parisi, Luca",            fdnr:0,  ftdc:2,  ftfdf:8,  ftpdf:5,  late:42,  late_gt15:18, pdnr:1,  total:76  },
+    { name:"Arben, Selimaj",          fdnr:0,  ftdc:1,  ftfdf:9,  ftpdf:4,  late:38,  late_gt15:15, pdnr:2,  total:69  },
+    { name:"Ornatelli, Massimiliano", fdnr:1,  ftdc:1,  ftfdf:7,  ftpdf:4,  late:36,  late_gt15:14, pdnr:0,  total:63  },
+    { name:"Palma, Maicol",           fdnr:0,  ftdc:0,  ftfdf:6,  ftpdf:4,  late:32,  late_gt15:12, pdnr:1,  total:55  },
+    { name:"Cau, Daniele",            fdnr:0,  ftdc:1,  ftfdf:5,  ftpdf:3,  late:28,  late_gt15:10, pdnr:1,  total:48  },
+    { name:"Zandonato, Luiz Carlos",  fdnr:0,  ftdc:1,  ftfdf:6,  ftpdf:5,  late:22,  late_gt15:8,  pdnr:2,  total:44  },
+    { name:"Dnibi, Walid",            fdnr:0,  ftdc:1,  ftfdf:5,  ftpdf:4,  late:20,  late_gt15:9,  pdnr:1,  total:40  },
+    { name:"TOTALS",                  fdnr:28, ftdc:28, ftfdf:430,ftpdf:258,late:1455,late_gt15:613, pdnr:125,total:2937,isTotal:true },
+  ],
+};
+
 function getStatusConfig(d) {
   if (!d || d.late == null) return {bg:"#1e293b",border:"#475569",text:"#94a3b8",label:"NO DATA",icon:"?"};
   if (d.late > 6 || (d.fondCtrl != null && d.fondCtrl > 2)) return {bg:"#450a0a",border:"#dc2626",text:"#fca5a5",label:"CRITICAL",icon:"◆"};
@@ -687,6 +1000,12 @@ export default function Dashboard() {
   const [lateMinDefects, setLateMinDefects] = useState(5);
   const [lateViewMode, setLateViewMode] = useState("combined");
   const [scorecardMinTotal, setScorecardMinTotal] = useState(5);
+  const [flowDefect, setFlowDefect] = useState(null);
+  const [flowAttr, setFlowAttr] = useState(null);
+  const [flowSite, setFlowSite] = useState(null);
+  const [geoDefectFilter, setGeoDefectFilter] = useState([...GEO_DATA.defectTypes]);
+  const [geoSiteFilter, setGeoSiteFilter] = useState(null);
+  const [geoHoveredSite, setGeoHoveredSite] = useState(null);
 
   // Available weeks for selected year
   const availableWeeks = useMemo(() => {
@@ -917,10 +1236,10 @@ export default function Dashboard() {
           </div>
         </div>
         <div style={{display:"flex",gap:4,marginTop:isMobile?14:18,overflowX:isMobile?"auto":"visible",paddingBottom:isMobile?4:0,WebkitOverflowScrolling:"touch"}}>
-          {[{key:"overview",l:"tabOverview"},{key:"depots",l:"tabDepots"},{key:"upstream",l:"tabUpstream"},{key:"cycles",l:"tabCycles"},{key:"ncc",l:"tabNcc"},{key:"late",l:"tabLate"},{key:"scorecard",l:"tabScorecard"}].map(tab=>{
-            const isSpecial = tab.key==="ncc"||tab.key==="late"||tab.key==="scorecard";
+          {[{key:"overview",l:"tabOverview"},{key:"depots",l:"tabDepots"},{key:"upstream",l:"tabUpstream"},{key:"cycles",l:"tabCycles"},{key:"ncc",l:"tabNcc"},{key:"late",l:"tabLate"},{key:"scorecard",l:"tabScorecard"},{key:"flow",l:"tabFlow"},{key:"geo",l:"tabGeo"}].map(tab=>{
+            const isSpecial = tab.key==="ncc"||tab.key==="late"||tab.key==="scorecard"||tab.key==="flow"||tab.key==="geo";
             const isActive = selectedView===tab.key;
-            const specialColors = tab.key==="ncc"?{bg:"#7c2d12",border:"#ea580c",text:"#fb923c",dot:"#ea580c"}:tab.key==="late"?{bg:"#1e1b4b",border:"#6366f1",text:"#a5b4fc",dot:"#6366f1"}:{bg:"#14532d",border:"#22c55e",text:"#86efac",dot:"#22c55e"};
+            const specialColors = tab.key==="ncc"?{bg:"#7c2d12",border:"#ea580c",text:"#fb923c",dot:"#ea580c"}:tab.key==="late"?{bg:"#1e1b4b",border:"#6366f1",text:"#a5b4fc",dot:"#6366f1"}:tab.key==="flow"?{bg:"#134e4a",border:"#0d9488",text:"#5eead4",dot:"#0d9488"}:tab.key==="geo"?{bg:"#1a1035",border:"#8b5cf6",text:"#c4b5fd",dot:"#8b5cf6"}:{bg:"#14532d",border:"#22c55e",text:"#86efac",dot:"#22c55e"};
             return(<button key={tab.key} onClick={()=>setSelectedView(tab.key)} style={{...tabStyle(isActive),
               ...(isSpecial&&isActive?{background:specialColors.bg,borderColor:specialColors.border,color:specialColors.text}:{})
             }}>{isSpecial&&<span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",background:isActive?specialColors.dot:(specialColors.dot+"60"),marginRight:5,verticalAlign:"middle"}}/>}{t(tab.l)}</button>);
@@ -1267,6 +1586,408 @@ export default function Dashboard() {
             <span style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("severityLegend")}</span>
           </div>
         </>)}
+
+        {/* ── DEFECT FLOW ── */}
+        {selectedView==="flow"&&(()=>{
+          const TEAL="#0d9488";const TEAL_DIM="#0d948860";
+          const fd = FLOW_W8;
+          const maxDef = Math.max(...fd.defectTypes.map(d=>d.count));
+          const selAttrs = flowDefect?(fd.attributions[flowDefect]||[]):[];
+          const maxAttrVal = selAttrs.length>0?Math.max(...selAttrs.map(a=>a.count)):1;
+          const attrData = flowAttr?selAttrs.find(a=>a.key===flowAttr):null;
+          const siteItems = attrData?Object.entries(attrData.sites).map(([s,c])=>({name:s,count:c})).sort((a,b)=>b.count-a.count):[];
+          const maxSite = siteItems.length>0?Math.max(...siteItems.map(s=>s.count)):1;
+          const drvKey = flowSite&&flowAttr?`${flowSite}-${flowAttr}`:null;
+          const drvItems = drvKey?(fd.drivers[drvKey]||[]):[];
+          const maxDrv = drvItems.length>0?Math.max(...drvItems.map(d=>d.count)):1;
+
+          const ColHeader = ({label})=>(
+            <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:14,paddingBottom:8,borderBottom:"1px solid #1e293b",display:"flex",alignItems:"center",gap:6}}>
+              <div style={{width:4,height:4,borderRadius:"50%",background:TEAL}}/>
+              {label}
+            </div>
+          );
+
+          const FlowBar=({count,maxVal,color,selected})=>(
+            <div style={{height:5,background:"#0f172a",borderRadius:3,overflow:"hidden",marginTop:3}}>
+              <div style={{width:`${Math.max((count/maxVal)*100,2)}%`,height:"100%",background:selected?color:color+"60",borderRadius:3,transition:"width 0.3s ease"}}/>
+            </div>
+          );
+
+          return(<>
+          {/* KPI Row */}
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(5,1fr)",gap:10,marginBottom:18}}>
+            {[
+              {label:"Orders Total",val:fd.ordersTotal.toLocaleString(),color:"#e2e8f0",sub:"all orders W8"},
+              {label:"With Defects",val:fd.ordersWithDefects.toLocaleString(),color:"#fcd34d",sub:`${fd.pctDef}% of total`},
+              {label:"% Orders OK",val:`${fd.pctOk}%`,color:"#86efac",sub:"delivered clean"},
+              {label:"Total Defects",val:fd.totalDefects.toLocaleString(),color:"#f8fafc",sub:"sum all defect types"},
+              {label:"Defect Rate",val:`${fd.pctDef}%`,color:"#fca5a5",sub:"orders with defects"},
+            ].map((kpi,i)=>(
+              <div key={i} style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,padding:"12px 16px"}}>
+                <div style={{fontSize:8,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:4}}>{kpi.label}</div>
+                <div style={{fontSize:isMobile?22:28,fontWeight:800,color:kpi.color,fontFamily:"'Outfit',sans-serif",lineHeight:1}}>{kpi.val}</div>
+                <div style={{fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace",marginTop:4}}>{kpi.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Breadcrumb + hint */}
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14,flexWrap:"wrap"}}>
+            <div style={{fontSize:9,color:"#f59e0b",fontFamily:"'DM Mono',monospace",fontWeight:700,background:"#f59e0b15",padding:"3px 10px",borderRadius:4,border:"1px solid #f59e0b30"}}>{fd.week}</div>
+            {flowDefect&&<><span style={{color:"#1e293b",fontSize:12}}>›</span><div style={{fontSize:9,color:"#5eead4",fontFamily:"'DM Mono',monospace",background:"#0d948815",padding:"3px 10px",borderRadius:4,border:"1px solid #0d948830"}}>{fd.defectTypes.find(d=>d.key===flowDefect)?.label}</div></>}
+            {flowAttr&&<><span style={{color:"#1e293b",fontSize:12}}>›</span><div style={{fontSize:9,color:"#5eead4",fontFamily:"'DM Mono',monospace",background:"#0d948815",padding:"3px 10px",borderRadius:4,border:"1px solid #0d948830"}}>{selAttrs.find(a=>a.key===flowAttr)?.label?.slice(0,24)}</div></>}
+            {flowSite&&<><span style={{color:"#1e293b",fontSize:12}}>›</span><div style={{fontSize:9,color:DEPOT_COLORS[flowSite],fontFamily:"'DM Mono',monospace",background:`${DEPOT_COLORS[flowSite]}15`,padding:"3px 10px",borderRadius:4,border:`1px solid ${DEPOT_COLORS[flowSite]}30`}}>{flowSite}</div></>}
+            <div style={{marginLeft:8,fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace"}}>{t("flowInstr")}</div>
+            {(flowDefect||flowAttr||flowSite)&&<button onClick={()=>{setFlowDefect(null);setFlowAttr(null);setFlowSite(null);}} style={{marginLeft:"auto",background:"transparent",border:"1px solid #334155",color:"#64748b",borderRadius:4,padding:"3px 10px",cursor:"pointer",fontSize:9,fontFamily:"'DM Mono',monospace"}}>✕ Reset</button>}
+          </div>
+
+          {/* Main Flow Grid */}
+          <div style={{display:"flex",gap:0,overflowX:"auto",background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:12,WebkitOverflowScrolling:"touch"}}>
+
+            {/* COL 1: Defect Types */}
+            <div style={{minWidth:220,padding:"20px 0 20px 20px",borderRight:"1px solid #1e293b",flexShrink:0}}>
+              <ColHeader label={t("flowDefectType")}/>
+              <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                {fd.defectTypes.map((dt,i)=>{
+                  const isSel=flowDefect===dt.key;
+                  return(
+                    <div key={i} onClick={()=>{setFlowDefect(isSel?null:dt.key);setFlowAttr(null);setFlowSite(null);}} style={{cursor:"pointer",padding:"8px 10px",borderRadius:7,background:isSel?"#0d948818":"transparent",border:`1px solid ${isSel?"#0d948850":"transparent"}`,transition:"all 0.15s",marginRight:16}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:2}}>
+                        <span style={{fontSize:12,fontWeight:isSel?700:400,color:isSel?"#5eead4":"#94a3b8",fontFamily:"'DM Mono',monospace"}}>{dt.label}</span>
+                        <span style={{fontSize:10,color:isSel?"#5eead4":"#475569",fontFamily:"'DM Mono',monospace",marginLeft:8}}>{dt.pct}%</span>
+                      </div>
+                      <FlowBar count={dt.count} maxVal={maxDef} color={TEAL} selected={isSel}/>
+                      <div style={{fontSize:13,fontWeight:700,color:isSel?"#f8fafc":"#64748b",fontFamily:"'Outfit',sans-serif",marginTop:4}}>{dt.count}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* COL 2: Attribution */}
+            {flowDefect?(
+              <div style={{minWidth:260,padding:"20px 0 20px 20px",borderRight:"1px solid #1e293b",flexShrink:0}}>
+                <ColHeader label={t("flowAttribution")}/>
+                <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                  {selAttrs.map((attr,i)=>{
+                    const isSel=flowAttr===attr.key;
+                    return(
+                      <div key={i} onClick={()=>{setFlowAttr(isSel?null:attr.key);setFlowSite(null);}} style={{cursor:"pointer",padding:"8px 10px",borderRadius:7,background:isSel?"#0d948818":"transparent",border:`1px solid ${isSel?"#0d948850":"transparent"}`,transition:"all 0.15s",marginRight:16}}>
+                        <div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",fontSize:11,fontWeight:isSel?700:400,color:isSel?"#5eead4":"#94a3b8",fontFamily:"'DM Mono',monospace",marginBottom:2}}>{attr.label}</div>
+                        <FlowBar count={attr.count} maxVal={maxAttrVal} color={TEAL} selected={isSel}/>
+                        <div style={{fontSize:13,fontWeight:700,color:isSel?"#f8fafc":"#64748b",fontFamily:"'Outfit',sans-serif",marginTop:4}}>{attr.count}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ):(
+              <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",padding:"40px",gap:12}}>
+                <div style={{fontSize:36,color:"#1e293b"}}>→</div>
+                <div style={{fontSize:11,color:"#334155",fontFamily:"'DM Mono',monospace",textAlign:"center",lineHeight:1.8}}>{t("flowSelectHint")}</div>
+              </div>
+            )}
+
+            {/* COL 3: Site */}
+            {flowAttr&&siteItems.length>0&&(
+              <div style={{minWidth:180,padding:"20px 0 20px 20px",borderRight:"1px solid #1e293b",flexShrink:0}}>
+                <ColHeader label={t("flowSite")}/>
+                <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                  {siteItems.map((site,i)=>{
+                    const isSel=flowSite===site.name;
+                    const dc=DEPOT_COLORS[site.name]||TEAL;
+                    return(
+                      <div key={i} onClick={()=>setFlowSite(isSel?null:site.name)} style={{cursor:"pointer",padding:"8px 10px",borderRadius:7,background:isSel?`${dc}18`:"transparent",border:`1px solid ${isSel?dc+"50":"transparent"}`,transition:"all 0.15s",marginRight:16}}>
+                        <div style={{fontSize:13,fontWeight:700,color:isSel?dc:"#94a3b8",fontFamily:"'DM Mono',monospace",marginBottom:2}}>{site.name}</div>
+                        <div style={{height:5,background:"#0f172a",borderRadius:3,overflow:"hidden",marginTop:3}}>
+                          <div style={{width:`${Math.max((site.count/maxSite)*100,2)}%`,height:"100%",background:isSel?dc:dc+"60",borderRadius:3,transition:"width 0.3s ease"}}/>
+                        </div>
+                        <div style={{fontSize:13,fontWeight:700,color:isSel?"#f8fafc":"#64748b",fontFamily:"'Outfit',sans-serif",marginTop:4}}>{site.count}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* COL 4: Drivers */}
+            {flowSite&&(
+              <div style={{minWidth:240,padding:"20px",flexShrink:0}}>
+                <ColHeader label={t("flowDriver")}/>
+                {drvItems.length>0?(
+                  <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                    {drvItems.map((drv,i)=>(
+                      <div key={i} style={{padding:"6px 10px",borderRadius:7}}>
+                        <div style={{fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace",marginBottom:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{drv.name}</div>
+                        <div style={{height:5,background:"#0f172a",borderRadius:3,overflow:"hidden",marginTop:3}}>
+                          <div style={{width:`${Math.max((drv.count/maxDrv)*100,4)}%`,height:"100%",background:DEPOT_COLORS[flowSite]||TEAL,borderRadius:3}}/>
+                        </div>
+                        <div style={{fontSize:13,fontWeight:700,color:"#64748b",fontFamily:"'Outfit',sans-serif",marginTop:4}}>{drv.count}</div>
+                      </div>
+                    ))}
+                  </div>
+                ):(
+                  <div style={{fontSize:10,color:"#334155",fontFamily:"'DM Mono',monospace",marginTop:20}}>No driver data for this combination</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Legend footer */}
+          <div style={{marginTop:12,padding:"10px 16px",background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:8,display:"flex",gap:16,flexWrap:"wrap",alignItems:"center"}}>
+            {[
+              {color:"#0d9488",label:"late_gt15 / ftfdf"},
+              {color:"#6366f1",label:"ftpdf"},
+              {color:"#f59e0b",label:"pdnr"},
+              {color:"#64748b",label:"fdnr / ftdc"},
+            ].map((l,i)=>(
+              <div key={i} style={{display:"flex",alignItems:"center",gap:5}}>
+                <div style={{width:10,height:10,borderRadius:2,background:l.color}}/>
+                <span style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{l.label}</span>
+              </div>
+            ))}
+            <div style={{marginLeft:"auto",fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace"}}>Bars are proportional to max value within each column · Data: {fd.week}</div>
+          </div>
+        </>);
+        })()}
+
+        {/* ── GEO VIEW ── */}
+        {selectedView==="geo"&&(()=>{
+          const PURPLE="#8b5cf6";
+          const defTypes = GEO_DATA.defectTypes;
+          // Filtered attribution rows
+          const filteredAttribs = GEO_DATA.attributions.filter(a=>geoDefectFilter.includes(a.defect) && (!geoSiteFilter||true));
+          // Filtered defect totals by site
+          const activeSite = geoSiteFilter ? GEO_DATA.sites.find(s=>s.key===geoSiteFilter) : null;
+          const siteDefects = activeSite ? activeSite.defects : null;
+          const maxBarCount = Math.max(...defTypes.map(dt=>siteDefects?siteDefects[dt]||0:GEO_DATA.defectTotals[dt]?.count||0));
+          const toggleDefect = dt => setGeoDefectFilter(prev=>prev.includes(dt)?prev.filter(x=>x!==dt):[...prev,dt]);
+
+          // Compute filtered driver matrix totals
+          const filteredDrivers = GEO_DATA.drivers.map(d=>{
+            const filtTotal = geoDefectFilter.reduce((s,dt)=>(s+(d[dt]||0)),0);
+            return {...d, _filtTotal: filtTotal};
+          });
+          const totalRow = filteredDrivers.find(d=>d.isTotal);
+          const driverRows = filteredDrivers.filter(d=>!d.isTotal).sort((a,b)=>b._filtTotal-a._filtTotal);
+          const maxDriverTotal = Math.max(...driverRows.map(d=>d._filtTotal),1);
+
+          const DefTypeColor = {late:"#6366f1",late_gt15:"#dc2626",ftfdf:"#f59e0b",ftpdf:"#0d9488",pdnr:"#ec4899",fdnr:"#64748b",ftdc:"#94a3b8"};
+
+          return (<>
+          {/* Top KPIs */}
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(4,1fr)",gap:10,marginBottom:18}}>
+            {[
+              {label:"Year",val:GEO_DATA.year,sub:"cumulative YTD",color:"#f59e0b"},
+              {label:"Total Defects",val:GEO_DATA.grandTotal.toLocaleString(),sub:`${geoDefectFilter.length} type${geoDefectFilter.length!==1?"s":""} selected`,color:"#fca5a5"},
+              {label:"Active Site Filter",val:geoSiteFilter||"All Sites",sub:"click map to filter",color:geoSiteFilter?DEPOT_COLORS[geoSiteFilter]:"#64748b"},
+              {label:"Defect Types On",val:`${geoDefectFilter.length}/${defTypes.length}`,sub:"use filter panel →",color:PURPLE},
+            ].map((kpi,i)=>(
+              <div key={i} style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,padding:"12px 16px"}}>
+                <div style={{fontSize:8,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:4}}>{kpi.label}</div>
+                <div style={{fontSize:isMobile?20:26,fontWeight:800,color:kpi.color,fontFamily:"'Outfit',sans-serif",lineHeight:1}}>{kpi.val}</div>
+                <div style={{fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace",marginTop:4}}>{kpi.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Main 3-col layout */}
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr auto",gap:16}}>
+            {/* Left: Map + Bar Chart + Tables */}
+            <div style={{display:"flex",flexDirection:"column",gap:14}}>
+
+              {/* Map + Bar chart side by side */}
+              <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
+
+                {/* REAL LEAFLET MAP */}
+                <div style={{background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:10,padding:16,position:"relative",minHeight:420}}>
+                  <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:10,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span>{t("geoMap")}</span>
+                    {geoSiteFilter&&<button onClick={()=>setGeoSiteFilter(null)} style={{background:"transparent",border:"1px solid #334155",color:"#64748b",borderRadius:4,padding:"2px 8px",cursor:"pointer",fontSize:8,fontFamily:"'DM Mono',monospace"}}>✕ {geoSiteFilter}</button>}
+                  </div>
+                  <div style={{height:360,borderRadius:8,overflow:"hidden"}}>
+                    <LeafletMap
+                      sites={GEO_DATA.sites}
+                      selectedSite={geoSiteFilter}
+                      onSiteClick={key=>setGeoSiteFilter(prev=>prev===key?null:key)}
+                      defectFilter={geoDefectFilter}
+                      hoveredSite={geoHoveredSite}
+                      onSiteHover={setGeoHoveredSite}
+                    />
+                  </div>
+                  {/* Site legend chips */}
+                  <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
+                    {GEO_DATA.sites.map(s=>{
+                      const dc=DEPOT_COLORS[s.key]||PURPLE;
+                      const isSel=geoSiteFilter===s.key;
+                      const cnt=geoDefectFilter.reduce((sum,dt)=>sum+(s.defects[dt]||0),0);
+                      return(<div key={s.key} onClick={()=>setGeoSiteFilter(isSel?null:s.key)} style={{display:"flex",alignItems:"center",gap:5,cursor:"pointer",padding:"3px 8px",borderRadius:5,background:isSel?`${dc}20`:"transparent",border:`1px solid ${isSel?dc+"60":"#1e293b"}`}}>
+                        <div style={{width:8,height:8,borderRadius:"50%",background:dc,opacity:isSel?1:0.5}}/>
+                        <span style={{fontSize:9,fontWeight:700,color:isSel?dc:"#64748b",fontFamily:"'DM Mono',monospace"}}>{s.key}</span>
+                        <span style={{fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace"}}>{cnt}</span>
+                      </div>);
+                    })}
+                  </div>
+                </div>
+
+                {/* Bar chart: defects by type for selected site */}
+                <div style={{background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:10,padding:16}}>
+                  <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>
+                    Defect Count — {geoSiteFilter||"All Sites"} · {GEO_DATA.year}
+                  </div>
+                  <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                    {defTypes.filter(dt=>geoDefectFilter.includes(dt)).map(dt=>{
+                      const count = siteDefects?siteDefects[dt]||0:GEO_DATA.defectTotals[dt]?.count||0;
+                      const barW = maxBarCount>0?Math.max((count/maxBarCount)*100,count>0?2:0):0;
+                      const dc = DefTypeColor[dt]||PURPLE;
+                      return(<div key={dt}>
+                        <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                          <span style={{fontSize:10,color:"#94a3b8",fontFamily:"'DM Mono',monospace"}}>{dt}</span>
+                          <span style={{fontSize:10,fontWeight:700,color:dc,fontFamily:"'DM Mono',monospace"}}>{count.toLocaleString()}</span>
+                        </div>
+                        <div style={{height:14,background:"#0f172a",borderRadius:3,overflow:"hidden"}}>
+                          <div style={{width:`${barW}%`,height:"100%",background:dc,borderRadius:3,opacity:0.8,transition:"width 0.3s"}}/>
+                        </div>
+                      </div>);
+                    })}
+                  </div>
+                  {/* Site buttons */}
+                  <div style={{marginTop:16,display:"flex",gap:6,flexWrap:"wrap"}}>
+                    <button onClick={()=>setGeoSiteFilter(null)} style={{background:!geoSiteFilter?"#1e293b":"transparent",border:`1px solid ${!geoSiteFilter?"#475569":"#1e293b"}`,color:!geoSiteFilter?"#e2e8f0":"#475569",borderRadius:5,padding:"3px 8px",cursor:"pointer",fontSize:9,fontFamily:"'DM Mono',monospace"}}>All</button>
+                    {GEO_DATA.sites.map(s=>{
+                      const isSel=geoSiteFilter===s.key;const dc=DEPOT_COLORS[s.key];
+                      return(<button key={s.key} onClick={()=>setGeoSiteFilter(isSel?null:s.key)} style={{background:isSel?`${dc}20`:"transparent",border:`1px solid ${isSel?dc+"60":"#1e293b"}`,color:isSel?dc:"#475569",borderRadius:5,padding:"3px 8px",cursor:"pointer",fontSize:9,fontWeight:700,fontFamily:"'DM Mono',monospace"}}>
+                        <span style={{display:"inline-block",width:5,height:5,borderRadius:"50%",background:isSel?dc:"#334155",marginRight:4,verticalAlign:"middle"}}/>{s.key}
+                      </button>);
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Attribution × Defect Table */}
+              <div style={{background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:10,padding:16}}>
+                <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>{t("geoAttribTable")} — {geoSiteFilter||"All Sites"}</div>
+                <div style={{overflowX:"auto"}}>
+                  <table style={{width:"100%",borderCollapse:"separate",borderSpacing:"2px 2px",minWidth:500}}>
+                    <thead><tr>
+                      <th style={{padding:"5px 8px",fontSize:8,color:"#475569",textAlign:"left",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",minWidth:80}}>ior_defect</th>
+                      <th style={{padding:"5px 8px",fontSize:8,color:"#475569",textAlign:"left",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",minWidth:200}}>ior_attribution</th>
+                      <th style={{padding:"5px 8px",fontSize:8,color:"#475569",textAlign:"right",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",width:60}}>Count</th>
+                      <th style={{padding:"5px 8px",minWidth:120}}/>
+                    </tr></thead>
+                    <tbody>
+                      {filteredAttribs.map((row,i)=>{
+                        const dc=DefTypeColor[row.defect]||PURPLE;
+                        const maxAtt=Math.max(...filteredAttribs.map(r=>r.count),1);
+                        return(<tr key={i} style={{background:i%2===0?"#0f172a08":"transparent"}}>
+                          <td style={{padding:"4px 8px"}}><span style={{fontSize:9,fontWeight:700,color:dc,background:`${dc}18`,padding:"2px 6px",borderRadius:3,fontFamily:"'DM Mono',monospace"}}>{row.defect}</span></td>
+                          <td style={{padding:"4px 8px",fontSize:10,color:"#94a3b8",fontFamily:"'DM Mono',monospace"}}>{row.attribution}</td>
+                          <td style={{padding:"4px 8px",fontSize:11,fontWeight:700,color:"#e2e8f0",textAlign:"right",fontFamily:"'Outfit',sans-serif"}}>{row.count.toLocaleString()}</td>
+                          <td style={{padding:"4px 8px"}}>
+                            <div style={{height:6,background:"#0f172a",borderRadius:3,overflow:"hidden"}}>
+                              <div style={{width:`${(row.count/maxAtt)*100}%`,height:"100%",background:dc,opacity:0.7,borderRadius:3}}/>
+                            </div>
+                          </td>
+                        </tr>);
+                      })}
+                      <tr style={{borderTop:"1px solid #1e293b"}}>
+                        <td colSpan={2} style={{padding:"5px 8px",fontSize:9,fontWeight:700,color:"#64748b",fontFamily:"'DM Mono',monospace",textTransform:"uppercase"}}>Total</td>
+                        <td style={{padding:"5px 8px",fontSize:12,fontWeight:800,color:"#f8fafc",textAlign:"right",fontFamily:"'Outfit',sans-serif"}}>{filteredAttribs.reduce((s,r)=>s+r.count,0).toLocaleString()}</td>
+                        <td/>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Driver matrix */}
+              <div style={{background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:10,padding:16}}>
+                <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:12}}>{t("geoDriverMatrix")} — {GEO_DATA.year}</div>
+                <div style={{overflowX:"auto"}}>
+                  <table style={{width:"100%",borderCollapse:"separate",borderSpacing:"2px 2px",minWidth:700}}>
+                    <thead><tr>
+                      <th style={{padding:"5px 8px",fontSize:8,color:"#475569",textAlign:"left",fontFamily:"'DM Mono',monospace",minWidth:180}}>Last Name, First Name</th>
+                      {geoDefectFilter.map(dt=>(
+                        <th key={dt} style={{padding:"5px 6px",fontSize:8,color:DefTypeColor[dt]||PURPLE,textAlign:"center",fontFamily:"'DM Mono',monospace",fontWeight:800,width:50}}>{dt}</th>
+                      ))}
+                      <th style={{padding:"5px 8px",fontSize:8,color:"#86efac",textAlign:"center",fontFamily:"'DM Mono',monospace",fontWeight:800,width:55}}>Total</th>
+                      <th style={{padding:"5px 8px",minWidth:80}}/>
+                    </tr></thead>
+                    <tbody>
+                      {driverRows.map((d,i)=>{
+                        const isTop=i<3;
+                        return(<tr key={i} style={{background:isTop?"#1a1035":"transparent"}}>
+                          <td style={{padding:"4px 8px",fontSize:11,fontWeight:isTop?700:400,color:isTop?"#c4b5fd":"#94a3b8",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap"}}>{d.name}</td>
+                          {geoDefectFilter.map(dt=>{
+                            const val=d[dt]||0;const dc=DefTypeColor[dt]||PURPLE;
+                            return(<td key={dt} style={{padding:"4px 6px",textAlign:"center",fontSize:10,fontWeight:val>20?700:400,color:val>30?dc:val>10?dc+"cc":"#475569",fontFamily:"'DM Mono',monospace",background:val>30?`${dc}15`:"transparent",borderRadius:2}}>{val||"·"}</td>);
+                          })}
+                          <td style={{padding:"4px 8px",textAlign:"center",fontSize:12,fontWeight:800,color:isTop?"#c4b5fd":"#86efac",fontFamily:"'Outfit',sans-serif"}}>{d._filtTotal}</td>
+                          <td style={{padding:"4px 8px"}}>
+                            <div style={{height:5,background:"#0f172a",borderRadius:3,overflow:"hidden"}}>
+                              <div style={{width:`${(d._filtTotal/maxDriverTotal)*100}%`,height:"100%",background:PURPLE,opacity:0.6,borderRadius:3}}/>
+                            </div>
+                          </td>
+                        </tr>);
+                      })}
+                      {/* Total row */}
+                      {totalRow&&<tr style={{borderTop:"2px solid #1e293b",background:"#12101f"}}>
+                        <td style={{padding:"5px 8px",fontSize:9,fontWeight:800,color:"#64748b",fontFamily:"'DM Mono',monospace",textTransform:"uppercase"}}>Total</td>
+                        {geoDefectFilter.map(dt=>{
+                          const val=totalRow[dt]||0;const dc=DefTypeColor[dt]||PURPLE;
+                          return(<td key={dt} style={{padding:"5px 6px",textAlign:"center",fontSize:10,fontWeight:700,color:dc,fontFamily:"'DM Mono',monospace"}}>{val.toLocaleString()}</td>);
+                        })}
+                        <td style={{padding:"5px 8px",textAlign:"center",fontSize:12,fontWeight:800,color:"#f8fafc",fontFamily:"'Outfit',sans-serif"}}>{geoDefectFilter.reduce((s,dt)=>s+(totalRow[dt]||0),0).toLocaleString()}</td>
+                        <td/>
+                      </tr>}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Filter panel */}
+            {!isMobile&&(
+            <div style={{width:200,flexShrink:0}}>
+              <div style={{background:"#0a0f1a",border:"1px solid #1e293b",borderRadius:10,padding:16,position:"sticky",top:20}}>
+                <div style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase",marginBottom:14,paddingBottom:8,borderBottom:"1px solid #1e293b"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <span>{t("geoFilter")}</span>
+                    <button onClick={()=>setGeoDefectFilter([...GEO_DATA.defectTypes])} style={{background:"transparent",border:"none",color:"#334155",fontSize:8,cursor:"pointer",fontFamily:"'DM Mono',monospace"}}>ALL</button>
+                  </div>
+                </div>
+                {/* Site filter */}
+                <div style={{fontSize:8,color:"#475569",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>Site</div>
+                {["ALL",...GEO_DATA.sites.map(s=>s.key)].map(sk=>{
+                  const isSel=sk==="ALL"?!geoSiteFilter:geoSiteFilter===sk;
+                  const dc=sk==="ALL"?"#64748b":(DEPOT_COLORS[sk]||PURPLE);
+                  return(<div key={sk} onClick={()=>setGeoSiteFilter(sk==="ALL"?null:(geoSiteFilter===sk?null:sk))} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 6px",marginBottom:4,cursor:"pointer",borderRadius:5,background:isSel?`${dc}15`:"transparent",border:`1px solid ${isSel?dc+"40":"transparent"}`}}>
+                    <div style={{width:10,height:10,borderRadius:2,background:isSel?dc:"#1e293b",border:`1px solid ${isSel?dc:"#334155"}`,flexShrink:0}}/>
+                    <span style={{fontSize:10,color:isSel?dc:"#64748b",fontFamily:"'DM Mono',monospace",fontWeight:isSel?700:400}}>{sk}</span>
+                  </div>);
+                })}
+                <div style={{borderTop:"1px solid #1e293b",margin:"12px 0"}}/>
+                {/* ior_defect filter */}
+                <div style={{fontSize:8,color:"#475569",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",marginBottom:8}}>ior_defect in Table Order</div>
+                {defTypes.map(dt=>{
+                  const isSel=geoDefectFilter.includes(dt);const dc=DefTypeColor[dt]||PURPLE;
+                  return(<div key={dt} onClick={()=>toggleDefect(dt)} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 6px",marginBottom:4,cursor:"pointer",borderRadius:5,background:isSel?`${dc}10`:"transparent"}}>
+                    <div style={{width:10,height:10,borderRadius:2,background:isSel?dc:"#1e293b",border:`1px solid ${isSel?dc:"#334155"}`,flexShrink:0}}/>
+                    <span style={{fontSize:10,color:isSel?dc:"#64748b",fontFamily:"'DM Mono',monospace",fontWeight:isSel?600:400}}>{dt}</span>
+                    <span style={{marginLeft:"auto",fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace"}}>{GEO_DATA.defectTotals[dt]?.count}</span>
+                  </div>);
+                })}
+                <div style={{borderTop:"1px solid #1e293b",margin:"12px 0"}}/>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace"}}>
+                  <span>ior_defect Total</span>
+                  <span style={{color:"#e2e8f0",fontWeight:700}}>{geoDefectFilter.reduce((s,dt)=>s+(GEO_DATA.defectTotals[dt]?.count||0),0).toLocaleString()}</span>
+                </div>
+              </div>
+            </div>)}
+          </div>
+        </>);
+        })()}
 
         {/* FOOTER */}
         <div style={{textAlign:"center",padding:"20px 0 8px",marginTop:24,borderTop:"1px solid #1e293b"}}>
