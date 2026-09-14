@@ -1,0 +1,5 @@
+.DS_Store
+node_modules/
+dist/
+# exportaciones a nivel de pedido (contienen order_id / CAP): se quedan en local
+data/lighthouse/*/order_level_defects_*.csv

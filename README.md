@@ -17,7 +17,7 @@ Delivery Performance Dashboard for DSP Italy operations.
 
 ## Data Range
 
-W47/2025 → W7/2026
+W47/2025 → W37/2026 (W9–W26 not loaded; UIT7 closed after W5/2026)
 
 ## Tech
 

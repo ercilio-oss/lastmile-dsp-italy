@@ -1,0 +1,25 @@
+{
+  "quicksight": {
+    "account_name": "agl-iris-qs-ext",
+    "login_url": "https://us-east-1.quicksight.aws.amazon.com/sn/auth/signin",
+    "username": "lastmileQS@lastmile2you.com",
+    "password": "CHANGE_ME_DO_NOT_STORE_REAL_PASSWORD",
+    "dashboard_sheets": [
+      {
+        "name": "Sheet1",
+        "url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/agl-iris-qs-ext/dashboards/5c1f3136-8c76-45af-9a7e-641fb555553c/sheets/5c1f3136-8c76-45af-9a7e-641fb555553c_6f9fc99f-42d3-4f09-bf42-014f152344a3"
+      },
+      {
+        "name": "Sheet2",
+        "url": "https://us-east-1.quicksight.aws.amazon.com/sn/account/agl-iris-qs-ext/dashboards/5c1f3136-8c76-45af-9a7e-641fb555553c/sheets/5c1f3136-8c76-45af-9a7e-641fb555553c_b3ab7785-5fa6-43b4-b125-695b25f7e04f"
+      }
+    ]
+  },
+  "download": {
+    "output_dir": "./downloads",
+    "format": "excel"
+  },
+  "schedule": {
+    "interval_days": 3
+  }
+}

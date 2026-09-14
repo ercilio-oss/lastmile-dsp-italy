@@ -1,0 +1,485 @@
+﻿"Show 5. By DSP Company","Split 5. No Split","Category","Sub Category","metric_name","Time Granularity (2. Weekly)","Metric (CUSTOM)"
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-06-28 00:00:00",0.056303748174590294
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-07-05 00:00:00",0.040374787052810904
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-07-12 00:00:00",0.044171554252199416
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-07-19 00:00:00",0.028659357568763224
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-07-26 00:00:00",0.03094010313367711
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-08-02 00:00:00",0.036322645290581164
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-08-09 00:00:00",0.016129032258064516
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-08-16 00:00:00",0.018327310273619
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-08-23 00:00:00",0.024061032863849766
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-08-30 00:00:00",0.06358703214136635
+"Last Mile","No Split","Quality","Timeliness","% Late","2026-09-06 00:00:00",0.08143607705779335
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-06-28 00:00:00",0.02774622748661366
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-07-05 00:00:00",0.016354344122657582
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-07-12 00:00:00",0.0218108504398827
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-07-19 00:00:00",0.0103866128101558
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-07-26 00:00:00",0.01408171360571202
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-08-02 00:00:00",0.017034068136272545
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-08-09 00:00:00",0.0035483870967741938
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-08-16 00:00:00",0.007743933918430563
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-08-23 00:00:00",0.008998435054773083
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-08-30 00:00:00",0.02977598441630722
+"Last Mile","No Split","Quality","Timeliness","~ % Late > 15","2026-09-06 00:00:00",0.04159369527145359
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-06-28 00:00:00",0.02158039915625507
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-07-05 00:00:00",0.019931856899488926
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-07-12 00:00:00",0.019611436950146627
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-07-19 00:00:00",0.020580880938642045
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-07-26 00:00:00",0.01943673145577152
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-08-02 00:00:00",0.02154308617234469
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-08-09 00:00:00",0.01870967741935484
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-08-16 00:00:00",0.020650490449148167
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-08-23 00:00:00",0.017996870109546165
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-08-30 00:00:00",0.021010157228328927
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTFDF","2026-09-06 00:00:00",0.027802101576182136
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-06-28 00:00:00",0.017361674509167615
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-07-05 00:00:00",0.015332197614991482
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-07-12 00:00:00",0.01594574780058651
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-07-19 00:00:00",0.01769571071359877
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-07-26 00:00:00",0.01586671955573185
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-08-02 00:00:00",0.01778557114228457
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-08-09 00:00:00",0.014838709677419355
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-08-16 00:00:00",0.014455343314403717
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-08-23 00:00:00",0.013302034428794992
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-08-30 00:00:00",0.017114234033671908
+"Last Mile","No Split","Quality","Full Delivery Failure","% FOND","2026-09-06 00:00:00",0.025175131348511383
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-06-28 00:00:00",0.0069771215317215645
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-07-05 00:00:00",0.007325383304940375
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-07-12 00:00:00",0.006598240469208211
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-07-19 00:00:00",0.0076937872667820735
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-07-26 00:00:00",0.006941689805632686
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-08-02 00:00:00",0.006513026052104208
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-08-09 00:00:00",0.002903225806451613
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-08-16 00:00:00",0.0038719669592152815
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-08-23 00:00:00",0.00528169014084507
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-08-30 00:00:00",0.007235285932934465
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Ops controllable","2026-09-06 00:00:00",0.012915936952714535
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-07-05 00:00:00",0.00034071550255536625
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-07-12 00:00:00",0.00036656891495601173
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-07-19 00:00:00",0.0007693787266782073
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-07-26 00:00:00",0.00019833399444664816
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-08-09 00:00:00",0.0003225806451612903
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-08-23 00:00:00",0.00019561815336463224
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-08-30 00:00:00",0.00013914011409489355
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, address not found","2026-09-06 00:00:00",0.00043782837127845885
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, age verification failed","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-06-28 00:00:00",0.0027583968846341066
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-07-05 00:00:00",0.0017035775127768314
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-07-12 00:00:00",0.0016495601173020528
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-07-19 00:00:00",0.0028851702250432777
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-07-26 00:00:00",0.002380007933359778
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-08-02 00:00:00",0.0027555110220440883
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-08-09 00:00:00",0.000967741935483871
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-08-16 00:00:00",0.002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-08-23 00:00:00",0.002347417840375587
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-08-30 00:00:00",0.002504522053708084
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, customer unavailable","2026-09-06 00:00:00",0.0028458844133099825
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-06-28 00:00:00",0.0027583968846341066
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-07-05 00:00:00",0.0040885860306643955
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-07-12 00:00:00",0.0032991202346041057
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-07-19 00:00:00",0.002308136180034622
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-07-26 00:00:00",0.0017850059500198333
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-08-02 00:00:00",0.0022545090180360722
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-08-09 00:00:00",0.0016129032258064516
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-08-16 00:00:00",0.0005162622612287042
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-08-23 00:00:00",0.0017605633802816902
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-08-30 00:00:00",0.0033393627382774455
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, inaccesible delivery location","2026-09-06 00:00:00",0.007224168126094571
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-06-28 00:00:00",0.00016225864027259452
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-08-02 00:00:00",0.001002004008016032
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item damaged","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, item incorrect","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, missing or incorrect access code","2026-09-06 00:00:00",0.00021891418563922942
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-08-30 00:00:00",0.00013914011409489355
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no items delivered","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-06-28 00:00:00",0.0008112932013629726
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-07-05 00:00:00",0.00034071550255536625
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-07-12 00:00:00",0.0010997067448680353
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-07-19 00:00:00",0.0013464127716868628
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-07-26 00:00:00",0.0015866719555731853
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-08-02 00:00:00",0.000501002004008016
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-08-23 00:00:00",0.0009780907668231612
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-08-30 00:00:00",0.0005565604563795742
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, no secure location","2026-09-06 00:00:00",0.0013134851138353765
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-06-28 00:00:00",0.00016225864027259452
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-07-05 00:00:00",0.00017035775127768313
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-07-26 00:00:00",0.0005950019833399445
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, object missing","2026-09-06 00:00:00",0.00043782837127845885
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-06-28 00:00:00",0.00016225864027259452
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-07-05 00:00:00",0.0006814310051107325
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-07-12 00:00:00",0.00018328445747800586
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-07-19 00:00:00",0.00019234468166955183
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-07-26 00:00:00",0.0003966679888932963
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, rejected","2026-09-06 00:00:00",0.00021891418563922942
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-06-28 00:00:00",0.00016225864027259452
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-07-19 00:00:00",0.00019234468166955183
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % FOND Picked up, other","2026-09-06 00:00:00",0.00021891418563922942
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-06-28 00:00:00",0.0014603277624533507
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-07-05 00:00:00",0.00034071550255536625
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-07-12 00:00:00",0.002565982404692082
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-07-19 00:00:00",0.0013464127716868628
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-07-26 00:00:00",0.00019833399444664816
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-08-09 00:00:00",0.0006451612903225806
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-08-23 00:00:00",0.00019561815336463224
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-08-30 00:00:00",0.0036176429664672325
+"Last Mile","No Split","Quality","Full Delivery Failure","% FTDC","2026-09-06 00:00:00",0.0028458844133099825
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-06-28 00:00:00",0.0011358104819081617
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-07-05 00:00:00",0.00034071550255536625
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-07-12 00:00:00",0.0023826979472140763
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-07-19 00:00:00",0.0013464127716868628
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-07-26 00:00:00",0.00019833399444664816
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-08-09 00:00:00",0.0006451612903225806
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-08-23 00:00:00",0.00019561815336463224
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-08-30 00:00:00",0.002782802281897871
+"Last Mile","No Split","Quality","Full Delivery Failure","% PSC","2026-09-06 00:00:00",0.0024080560420315237
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-07-12 00:00:00",0.00018328445747800586
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Not assigned","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-06-28 00:00:00",0.00048677592081778357
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-07-12 00:00:00",0.0007331378299120235
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-07-19 00:00:00",0.0007693787266782073
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Assigned, not picked up","2026-09-06 00:00:00",0.001532399299474606
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-06-28 00:00:00",0.0006490345610903781
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-07-05 00:00:00",0.00034071550255536625
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-07-12 00:00:00",0.001466275659824047
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-07-19 00:00:00",0.0005770340450086555
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-07-26 00:00:00",0.00019833399444664816
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-08-09 00:00:00",0.0006451612903225806
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-08-23 00:00:00",0.00019561815336463224
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-08-30 00:00:00",0.002782802281897871
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Picked up, not delivered","2026-09-06 00:00:00",0.0008756567425569177
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-06-28 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-07-05 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-07-12 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-07-19 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-07-26 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-08-02 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-08-09 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-08-16 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-08-23 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-08-30 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","~ % PSC Unknown ops cancellation","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-06-28 00:00:00",0.0017848450429985396
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-07-05 00:00:00",0.0010221465076660989
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-07-12 00:00:00",0.0007331378299120235
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-07-19 00:00:00",0.0017311021350259665
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-07-26 00:00:00",0.001190003966679889
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-08-02 00:00:00",0.002004008016032064
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-08-09 00:00:00",0.001935483870967742
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-08-16 00:00:00",0.0005162622612287042
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-08-23 00:00:00",0.001564945226917058
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-08-30 00:00:00",0.0009739807986642549
+"Last Mile","No Split","Quality","Full Delivery Failure","% FDNR","2026-09-06 00:00:00",0.00021891418563922942
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-06-28 00:00:00",0.010709070257991239
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-07-05 00:00:00",0.008347529812606473
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-07-12 00:00:00",0.00843108504398827
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-07-19 00:00:00",0.0076937872667820735
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-07-26 00:00:00",0.006743355811186037
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-08-02 00:00:00",0.00751503006012024
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-08-09 00:00:00",0.007419354838709678
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-08-16 00:00:00",0.009550851832731027
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-08-23 00:00:00",0.013497652582159625
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-08-30 00:00:00",0.022123278141088075
+"Last Mile","No Split","Quality","Partial Delivery Failure","% FTPDF","2026-09-06 00:00:00",0.01795096322241681
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-06-28 00:00:00",0.010222294337173454
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-07-05 00:00:00",0.008177172061328791
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-07-12 00:00:00",0.007881231671554252
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-07-19 00:00:00",0.007309097903442969
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-07-26 00:00:00",0.006743355811186037
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-08-02 00:00:00",0.007264529058116233
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-08-09 00:00:00",0.0070967741935483875
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-08-16 00:00:00",0.009292720702116675
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-08-23 00:00:00",0.012519561815336464
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-08-30 00:00:00",0.020592736886044245
+"Last Mile","No Split","Quality","Partial Delivery Failure","% POND","2026-09-06 00:00:00",0.017294220665499124
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-06-28 00:00:00",0.010709070257991239
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-07-05 00:00:00",0.008858603066439524
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-07-12 00:00:00",0.006048387096774193
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-07-19 00:00:00",0.00827082131179073
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-07-26 00:00:00",0.01090836969456565
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-08-02 00:00:00",0.009769539078156312
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-08-09 00:00:00",0.005483870967741935
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-08-16 00:00:00",0.012132163138874549
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-08-23 00:00:00",0.014084507042253521
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-08-30 00:00:00",0.011409489355781273
+"Last Mile","No Split","Quality","Partial Delivery Failure","% PDNR","2026-09-06 00:00:00",0.0032837127845884414
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-06-28 00:00:00",0.015414570825896479
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-07-05 00:00:00",0.017035775127768313
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-07-12 00:00:00",0.01722873900293255
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-07-19 00:00:00",0.019619157530294286
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-07-26 00:00:00",0.014280047600158666
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-08-02 00:00:00",0.021292585170340682
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-08-09 00:00:00",0.01806451612903226
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-08-16 00:00:00",0.016778523489932886
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-08-23 00:00:00",0.022496087636932706
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-08-30 00:00:00",0.02114929734242382
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Damage Items","2026-09-06 00:00:00",0.010507880910683012
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-06-28 00:00:00",0.02190491643680026
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-07-05 00:00:00",0.02112436115843271
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-07-12 00:00:00",0.01906158357771261
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-07-19 00:00:00",0.0207732256203116
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-07-26 00:00:00",0.023998413328044428
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-08-02 00:00:00",0.024799599198396794
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-08-09 00:00:00",0.027741935483870966
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-08-16 00:00:00",0.040010325245224576
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-08-23 00:00:00",0.03305946791862285
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-08-30 00:00:00",0.02699318213440935
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Missing Items","2026-09-06 00:00:00",0.012915936952714535
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-06-28 00:00:00",0.003407431445724485
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-07-05 00:00:00",0.002555366269165247
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-07-12 00:00:00",0.001466275659824047
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-07-19 00:00:00",0.002500480861704174
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-07-26 00:00:00",0.0019833399444664813
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-08-02 00:00:00",0.0017535070140280561
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-08-09 00:00:00",0.0016129032258064516
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-08-16 00:00:00",0.0005162622612287042
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-08-23 00:00:00",0.0021517996870109544
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-08-30 00:00:00",0.002921942395992765
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Full bag damaged","2026-09-06 00:00:00",0.0006567425569176883
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-06-28 00:00:00",0.0011358104819081617
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-07-05 00:00:00",0.0010221465076660989
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-07-12 00:00:00",0.00036656891495601173
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-07-19 00:00:00",0.0009617234083477592
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-07-26 00:00:00",0.0003966679888932963
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-08-02 00:00:00",0.000250501002004008
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-08-09 00:00:00",0.0006451612903225806
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-08-23 00:00:00",0.000782472613458529
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-08-30 00:00:00",0.0008348406845693614
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged ambient","2026-09-06 00:00:00",0.00021891418563922942
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-06-28 00:00:00",0.0024338796040889177
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-07-05 00:00:00",0.0015332197614991482
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-07-12 00:00:00",0.0010997067448680353
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-07-19 00:00:00",0.0015387574533564147
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-07-26 00:00:00",0.0015866719555731853
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-08-02 00:00:00",0.001503006012024048
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-08-09 00:00:00",0.000967741935483871
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-08-23 00:00:00",0.0013693270735524257
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-08-30 00:00:00",0.0020871017114234033
+"Last Mile","No Split","Quality","Partial Delivery Failure","~ % Full bag damaged cold","2026-09-06 00:00:00",0.00043782837127845885
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-06-28 00:00:00",0.00048677592081778357
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-07-05 00:00:00",0.00017035775127768313
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-07-12 00:00:00",0.0005498533724340176
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-07-19 00:00:00",0.00038468936333910367
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-07-26 00:00:00",0.0005950019833399445
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-08-02 00:00:00",0.000501002004008016
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-08-09 00:00:00",0.0003225806451612903
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-08-16 00:00:00",0.0002581311306143521
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-08-23 00:00:00",0.0003912363067292645
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-08-30 00:00:00",0.0005565604563795742
+"Last Mile","No Split","Quality","Partial Delivery Failure","% Bag Almost Fully Damaged","2026-09-06 00:00:00",0
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-06-28 00:00:00",0.5449374288964732
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-07-05 00:00:00",0.593198992443325
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-07-12 00:00:00",0.5872576177285319
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-07-19 00:00:00",0.6045576407506702
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-07-26 00:00:00",0.6242857142857143
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-08-02 00:00:00",0.6550680786686838
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-08-09 00:00:00",0.7121495327102804
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-08-16 00:00:00",0.670196671709531
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-08-23 00:00:00",0.6108998732572877
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-08-30 00:00:00",0.5258780036968577
+"Last Mile","No Split","Quality","RME","% RME Happy","2026-09-06 00:00:00",0.5311827956989247
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-06-28 00:00:00",0.04778156996587031
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-07-05 00:00:00",0.037783375314861464
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-07-12 00:00:00",0.038781163434903045
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-07-19 00:00:00",0.04155495978552279
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-07-26 00:00:00",0.04
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-08-02 00:00:00",0.024205748865355523
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-08-09 00:00:00",0.029906542056074768
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-08-16 00:00:00",0.03479576399394856
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-08-23 00:00:00",0.050697084917617236
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-08-30 00:00:00",0.06007393715341959
+"Last Mile","No Split","Quality","RME","% RME Damaged Item","2026-09-06 00:00:00",0.08387096774193549
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-06-28 00:00:00",0.09101251422070535
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-07-05 00:00:00",0.09571788413098237
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-07-12 00:00:00",0.06371191135734072
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-07-19 00:00:00",0.08042895442359249
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-07-26 00:00:00",0.06285714285714286
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-08-02 00:00:00",0.05143721633888049
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-08-09 00:00:00",0.03551401869158879
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-08-16 00:00:00",0.048411497730711045
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-08-23 00:00:00",0.06717363751584284
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-08-30 00:00:00",0.0711645101663586
+"Last Mile","No Split","Quality","RME","% RME Instructions not followed","2026-09-06 00:00:00",0.05591397849462366
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-06-28 00:00:00",0.048919226393629126
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-07-05 00:00:00",0.028967254408060455
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-07-12 00:00:00",0.023545706371191136
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-07-19 00:00:00",0.032171581769437
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-07-26 00:00:00",0.025714285714285714
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-08-02 00:00:00",0.030257186081694403
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-08-09 00:00:00",0.018691588785046728
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-08-16 00:00:00",0.036308623298033284
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-08-23 00:00:00",0.024081115335868188
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-08-30 00:00:00",0.04251386321626617
+"Last Mile","No Split","Quality","RME","% RME Bags damaged","2026-09-06 00:00:00",0.04946236559139785
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-06-28 00:00:00",0.1353811149032992
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-07-05 00:00:00",0.0982367758186398
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-07-12 00:00:00",0.10803324099722991
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-07-19 00:00:00",0.09919571045576407
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-07-26 00:00:00",0.09428571428571429
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-08-02 00:00:00",0.08774583963691376
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-08-09 00:00:00",0.07289719626168224
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-08-16 00:00:00",0.07866868381240545
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-08-23 00:00:00",0.09125475285171103
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-08-30 00:00:00",0.09519408502772643
+"Last Mile","No Split","Quality","RME","% RME Inappropriate Driver Conduct","2026-09-06 00:00:00",0.0967741935483871
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-06-28 00:00:00",0.2412420382165605
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-07-05 00:00:00",0.2996688741721854
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-07-12 00:00:00",0.24064171122994651
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-07-19 00:00:00",0.23973880597014927
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-07-26 00:00:00",0.17530631479736097
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-08-02 00:00:00",0.19757575757575757
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-08-09 00:00:00",0.13713405238828968
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-08-16 00:00:00",0.11005917159763313
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-08-23 00:00:00",0.1674087266251113
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-08-30 00:00:00",0.37093563370935634
+"Last Mile","No Split","Operational","Operational","% Late pickup routes","2026-09-06 00:00:00",0.3637274549098196
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-06-28 00:00:00",0.09367088607594937
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-07-05 00:00:00",0.136
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-07-12 00:00:00",0.08187134502923976
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-07-19 00:00:00",0.10122699386503067
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-07-26 00:00:00",0.05373134328358209
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-08-02 00:00:00",0.07142857142857142
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-08-09 00:00:00",0.06220095693779904
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-08-16 00:00:00",0.09019607843137255
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-08-23 00:00:00",0.08059701492537313
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-08-30 00:00:00",0.19909502262443438
+"Last Mile","No Split","Operational","Operational","% Late pickup routes (First window)","2026-09-06 00:00:00",0.21875
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-06-28 00:00:00",0.9918870679863703
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-07-05 00:00:00",0.9923339011925043
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-07-12 00:00:00",0.9910190615835777
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-07-19 00:00:00",0.990959799961531
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-07-26 00:00:00",0.9928599761999206
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-08-02 00:00:00",0.9934869739478958
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-08-09 00:00:00",0.9964516129032258
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-08-16 00:00:00",0.9958699019101703
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-08-23 00:00:00",0.9945226917057903
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-08-30 00:00:00",0.9899819117851677
+"Last Mile","No Split","Operational","Operational","% Successful delivery orders","2026-09-06 00:00:00",0.9846760070052539
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-06-28 00:00:00",0.4769108280254777
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-07-05 00:00:00",0.47433774834437087
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-07-12 00:00:00",0.4474153297682709
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-07-19 00:00:00",0.43656716417910446
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-07-26 00:00:00",0.4429783223374175
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-08-02 00:00:00",0.46545454545454545
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-08-09 00:00:00",0.4869029275808937
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-08-16 00:00:00",0.42958579881656805
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-08-23 00:00:00",0.3624220837043633
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-08-30 00:00:00",0.44193762441937623
+"Last Mile","No Split","Operational","Operational","% Route Order Compliant","2026-09-06 00:00:00",0.501002004008016
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-06-28 00:00:00",0.2269108280254777
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-07-05 00:00:00",0.21357615894039736
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-07-12 00:00:00",0.20320855614973263
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-07-19 00:00:00",0.20988805970149255
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-07-26 00:00:00",0.2233741753063148
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-08-02 00:00:00",0.21818181818181817
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-08-09 00:00:00",0.20647149460708783
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-08-16 00:00:00",0.2153846153846154
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-08-23 00:00:00",0.17275155832591274
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-08-30 00:00:00",0.13404114134041142
+"Last Mile","No Split","Operational","Operational","% Route Order + Sequence Compliant","2026-09-06 00:00:00",0.125250501002004
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-06-28 00:00:00",0.9705882352941176
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-07-05 00:00:00",0.9482758620689655
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-07-12 00:00:00",0.9540229885057471
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-07-19 00:00:00",0.9425287356321839
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-07-26 00:00:00",0.9770114942528736
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-08-02 00:00:00",0.9882352941176471
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-08-09 00:00:00",0.9710144927536232
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-08-16 00:00:00",0.9139072847682119
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-08-23 00:00:00",0.9520958083832335
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-08-30 00:00:00",0.8850574712643678
+"Last Mile","No Split","Operational","Operational","% Route Fulfillment Compliance","2026-09-06 00:00:00",0.87
