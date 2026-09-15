@@ -20,6 +20,7 @@ Convenciones:
   * NCC  = ior_attribution == "Not call compliant"
   * Late (tabla de conductores) = ior_attribution == "Late Batch Ops Controllable" (class_late + class_late_gt15)
   * pondFP / pondPP = recuento de attribution que contiene "FTPDF FP" / "FTPDF PP" ÷ Orders de la semana
+  * PRODUCTIVITY (stops per route) = Orders ÷ Routes de Business Metrics, por estación y semana
   * Sólo se añaden semanas que aún no existen en el JSX (idempotente).
 """
 import csv, json, re, sys, glob, os, datetime as dt, argparse
@@ -210,6 +211,49 @@ def main():
         d["l"] += info["l"]; d["g"] += info["g"]; d["t"] = d["l"] + d["g"]
     late_list.sort(key=lambda d: -d["t"])
     src = src.replace(m.group(0), "const LATE_DRIVERS = [\n" + ",\n".join("  " + dump_js(d) for d in late_list) + "\n];")
+
+    # 3h. PRODUCTIVITY — stops per route (Orders ÷ Routes) por estación y semana
+    prod = defaultdict(dict)
+    for (stn, w), o in orders.items():
+        prod[stn][w] = o
+    routes = {}
+    for r in read(one("business_metrics_by_station_*.csv", a.folder)):
+        routes[(r["Show 4. By Station Code"], week_of(r["Time Granularity"]))] = int(r["Routes"] or 0)
+    if "const PRODUCTIVITY = {" not in src:
+        tpl = ("// ─── PRODUCTIVITY — stops per route (Orders ÷ Routes) por estación y semana ─\n"
+               "// Fuente: QuickSight Lighthouse › Business Metrics (Show By = Station Code, semanal).\n"
+               "// Lo rellena scripts/lighthouse_to_dashboard.py — no editar a mano.\n"
+               "const PRODUCTIVITY = {\n" + "".join(f"  {stn}: [\n  ],\n" for stn in STATIONS) + "};\n"
+               "// Objetivo stops/route por estación (P75 de las semanas cargadas al crearse; editable a mano)\n"
+               "const SPR_TARGET = {};\n\n")
+        src = src.replace("function getStatusConfig(d) {", tpl + "function getStatusConfig(d) {", 1)
+    m = re.search(r'const PRODUCTIVITY = \{\n(.*?)\n\};', src, re.S)
+    body = m.group(1)
+    for stn in STATIONS:
+        bm = re.search(r'(  %s: \[\n)(.*?)(  \],)' % stn, body, re.S)
+        if not bm:
+            body = body.rstrip("\n") + f"\n  {stn}: [\n  ],"; bm = re.search(r'(  %s: \[\n)(.*?)(  \],)' % stn, body, re.S)
+        have = existing_weeks(bm.group(2)); new_lines = []
+        for w in sorted(set(k[1] for k in orders if k[0] == stn)):
+            if w in have: continue
+            o = orders.get((stn, w), 0); rt = routes.get((stn, w), 0)
+            if not (o or rt): continue
+            new_lines.append(f'    {{year:{w[0]},week:"W{w[1]}",orders:{o},routes:{rt}}},\n')
+        if new_lines:
+            body = body.replace(bm.group(0), bm.group(1) + bm.group(2) + "".join(new_lines) + bm.group(3))
+            print(f"PRODUCTIVITY {stn}: +{len(new_lines)} semanas")
+    src = src.replace(m.group(0), "const PRODUCTIVITY = {\n" + body + "\n};")
+    # objetivo = percentil 75 de stops/route por estación (sólo si aún no está definido)
+    mt = re.search(r'const SPR_TARGET = \{(.*?)\};', src, re.S)
+    if mt is not None and not mt.group(1).strip():
+        tg = {}
+        for stn in STATIONS:
+            vals = sorted(orders[(s_, w)] / routes[(s_, w)] for (s_, w) in orders if s_ == stn and routes.get((s_, w)))
+            if vals:
+                k = 0.75 * (len(vals) - 1); lo = int(k); hi = min(lo + 1, len(vals) - 1)
+                tg[stn] = round(vals[lo] + (vals[hi] - vals[lo]) * (k - lo), 1)
+        src = src.replace(mt.group(0), "const SPR_TARGET = {" + ",".join(f"{k}:{v}" for k, v in tg.items()) + "};")
+        print("SPR_TARGET (P75):", tg)
 
     # 3g. cabecera de rango en el comentario de datos
     last = weeks[-1]; src = src.replace("(Order-Level, W47/25–W7/26)", f"(Order-Level, W47/25–W{last[1]}/{str(last[0])[2:]})")

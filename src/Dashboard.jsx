@@ -171,7 +171,9 @@ const T = {
     brand: "Last Mile DSP — Italy", title: "Delivery Performance", latestInRange: "Latest in Range",
     stations: "stations", station: "station",
     tabOverview: "Overview", tabDepots: "Depot Deep-Dive", tabUpstream: "Upstream vs Controllable",
-    tabCycles: "UIT4 Cycles", tabNcc: "NCC Drivers", tabLate: "Late Drivers", tabScorecard: "Driver Scorecard",
+    tabCycles: "UIT4 Cycles", tabNcc: "NCC Drivers", tabLate: "Late Drivers", tabScorecard: "Driver Scorecard", tabProductivity: "Productivity",
+    sprTitle: "Stops per route — weekly", sprUnit: "stops / route", sprAvg: "avg", sprTarget: "target", sprOrders: "Orders", sprRoutes: "Routes", sprValues: "Values", sprNetwork: "Network", sprTable: "Stops per route by station — weekly",
+    sprNote: "Stops per route = delivered orders ÷ routes accepted (Amazon Lighthouse › Business Metrics, weekly by station). Target = 75th percentile of the loaded weeks; amber below 90% of target, red below 80%.",
     year: "Year", weeks: "Weeks", reset: "Reset",
     // Heatmap
     depot: "Depot", week: "Week", latePlus15: "Late +15", fondCtrl: "FOND Ctrl", ftfdf: "FTFDF",
@@ -228,7 +230,9 @@ const T = {
     brand: "Ultimo Miglio DSP — Italia", title: "Performance di Consegna", latestInRange: "Ultima nel Range",
     stations: "stazioni", station: "stazione",
     tabOverview: "Panoramica", tabDepots: "Analisi Depositi", tabUpstream: "Upstream vs Controllabile",
-    tabCycles: "Cicli UIT4", tabNcc: "Autisti NCC", tabLate: "Autisti in Ritardo", tabScorecard: "Scorecard Autisti",
+    tabCycles: "Cicli UIT4", tabNcc: "Autisti NCC", tabLate: "Autisti in Ritardo", tabScorecard: "Scorecard Autisti", tabProductivity: "Produttività",
+    sprTitle: "Stop per route — settimanale", sprUnit: "stop / route", sprAvg: "media", sprTarget: "target", sprOrders: "Ordini", sprRoutes: "Route", sprValues: "Valori", sprNetwork: "Rete", sprTable: "Stop per route per stazione — settimanale",
+    sprNote: "Stop per route = ordini consegnati ÷ route accettate (Amazon Lighthouse › Business Metrics, settimanale per stazione). Target = 75° percentile delle settimane caricate; ambra sotto il 90% del target, rosso sotto l'80%.",
     year: "Anno", weeks: "Settimane", reset: "Resetta",
     depot: "Deposito", week: "Sett.", latePlus15: "Ritardo +15", fondCtrl: "FOND Ctrl", ftfdf: "FTFDF",
     ftpdf: "FTPDF", pdnr: "PDNR", fdnr: "FDNR", pp: "PP", status: "Stato",
@@ -275,7 +279,9 @@ const T = {
     brand: "Última Milla DSP — Italia", title: "Rendimiento de Entrega", latestInRange: "Última en Rango",
     stations: "estaciones", station: "estación",
     tabOverview: "Resumen", tabDepots: "Análisis de Depósitos", tabUpstream: "Upstream vs Controlable",
-    tabCycles: "Ciclos UIT4", tabNcc: "Conductores NCC", tabLate: "Conductores con Retraso", tabScorecard: "Scorecard Conductores",
+    tabCycles: "Ciclos UIT4", tabNcc: "Conductores NCC", tabLate: "Conductores con Retraso", tabScorecard: "Scorecard Conductores", tabProductivity: "Productividad",
+    sprTitle: "Paradas por ruta — semanal", sprUnit: "paradas / ruta", sprAvg: "media", sprTarget: "objetivo", sprOrders: "Pedidos", sprRoutes: "Rutas", sprValues: "Valores", sprNetwork: "Red", sprTable: "Paradas por ruta por estación — semanal",
+    sprNote: "Paradas por ruta = pedidos entregados ÷ rutas aceptadas (Amazon Lighthouse › Business Metrics, semanal por estación). Objetivo = percentil 75 de las semanas cargadas; ámbar por debajo del 90 % del objetivo, rojo por debajo del 80 %.",
     year: "Año", weeks: "Semanas", reset: "Reiniciar",
     depot: "Depósito", week: "Sem.", latePlus15: "Retraso +15", fondCtrl: "FOND Ctrl", ftfdf: "FTFDF",
     ftpdf: "FTPDF", pdnr: "PDNR", fdnr: "FDNR", pp: "PP", status: "Estado",
@@ -610,7 +616,7 @@ const ALL_DEPOT_DATA = {
 // ─── CONSTANTS ──────────────────────────────────────────────────────
 const ALL_YEARS = [2025, 2026];
 const ALL_DEPOTS = ["UIT4","UIT1","UIT7","UBA1","UIL7"];
-const DEPOT_COLORS = {UIT4:"#60a5fa",UIT1:"#34d399",UIT7:"#a78bfa",UBA1:"#fb923c",UIL7:"#94a3b8"};
+const DEPOT_COLORS = {UIT4:"#60a5fa",UIT1:"#34d399",UIT7:"#a78bfa",UBA1:"#fb923c",UIL7:"#f472b6"};
 const DEPOT_LABELS = {UIT4:"Roma",UIT1:"Milano",UIT7:"Milano",UBA1:"Bologna",UIL7:"Milano"};
 const weekNum = w => parseInt(w.slice(1));
 const sortKey = (year, week) => year * 100 + weekNum(week);
@@ -734,81 +740,81 @@ const LATE_GT15_STN = {"UIT4":{"2025-W47":0,"2025-W48":11,"2025-W49":16,"2025-W5
 const LATE_DRIVERS = [
   {tid:"AGECZO3FHG9JX",s:["UIT4"],l:36,g:25,t:61,w:{"2025-W50":12,"2025-W51":3,"2025-W52":13,"2026-W2":15,"2026-W3":2,"2026-W4":12,"2026-W5":3,"2026-W8":1}},
   {tid:"AMDQHZ3LZK9PR",s:["UIT4"],l:37,g:21,t:58,w:{"2025-W49":9,"2025-W50":15,"2025-W51":6,"2025-W52":11,"2026-W2":11,"2026-W4":6}},
+  {tid:"A4V93M3EYBI46",s:["UIT4"],l:40,g:15,t:55,w:{"2025-W49":3,"2025-W50":14,"2025-W51":4,"2026-W2":16,"2026-W4":3,"2026-W5":9,"2026-W6":1,"2026-W8":1,"2026-W37":2}},
   {tid:"A282LJ5XHQUCN6",s:["UIT4"],l:36,g:18,t:54,w:{"2025-W50":24,"2025-W51":13,"2025-W52":8,"2026-W4":6,"2026-W5":3}},
-  {tid:"A4V93M3EYBI46",s:["UIT4"],l:38,g:15,t:53,w:{"2025-W49":3,"2025-W50":14,"2025-W51":4,"2026-W2":16,"2026-W4":3,"2026-W5":9,"2026-W6":1,"2026-W8":1,"2026-W37":2}},
+  {tid:"A2VN2H0236SIOC",s:["UIT4"],l:35,g:19,t:54,w:{"2025-W49":2,"2025-W50":15,"2026-W2":17,"2026-W4":1,"2026-W5":3,"2026-W7":1,"2026-W8":1,"2026-W37":1,"2026-W35":4,"2026-W29":2}},
   {tid:"A1VVE91GJOIDMR",s:["UIT4"],l:34,g:18,t:52,w:{"2025-W48":10,"2025-W49":3,"2025-W50":17,"2025-W51":4,"2026-W2":12,"2026-W3":1,"2026-W4":3,"2026-W5":1,"2026-W6":1}},
-  {tid:"A2VN2H0236SIOC",s:["UIT4"],l:30,g:17,t:47,w:{"2025-W49":2,"2025-W50":15,"2026-W2":17,"2026-W4":1,"2026-W5":3,"2026-W7":1,"2026-W8":1,"2026-W37":1,"2026-W35":4,"2026-W29":2}},
   {tid:"A3N5ILEKGGQQUR",s:["UIT4"],l:26,g:20,t:46,w:{"2025-W48":3,"2025-W50":17,"2025-W51":4,"2026-W2":11,"2026-W4":2,"2026-W5":5,"2026-W7":4}},
+  {tid:"APTV7Y5N77N0J",s:["UIT4"],l:31,g:15,t:46,w:{"2025-W51":7,"2025-W52":8,"2026-W2":1,"2026-W4":9,"2026-W5":15,"2026-W36":3}},
   {tid:"A2BRNMGQ1R89G7",s:["UIT4"],l:33,g:12,t:45,w:{"2025-W48":5,"2025-W50":20,"2025-W51":1,"2025-W52":8,"2026-W1":4,"2026-W2":6,"2026-W4":1}},
-  {tid:"APTV7Y5N77N0J",s:["UIT4"],l:29,g:14,t:43,w:{"2025-W51":7,"2025-W52":8,"2026-W2":1,"2026-W4":9,"2026-W5":15,"2026-W36":3}},
-  {tid:"AE5QJFCD0PTFU",s:["UIT4"],l:28,g:14,t:42,w:{"2025-W48":4,"2025-W49":9,"2025-W50":15,"2025-W52":5,"2026-W2":6,"2026-W37":1,"2026-W36":2}},
-  {tid:"A3UD94Q70561NT",s:["UIT1","UIT7"],l:29,g:8,t:37,w:{"2025-W48":2,"2025-W50":5,"2025-W51":4,"2025-W52":1,"2026-W1":4,"2026-W2":7,"2026-W5":1,"2026-W6":8,"2026-W7":4,"2026-W37":1}},
-  {tid:"AVG0Z3EKUPTYE",s:["UIT4"],l:28,g:9,t:37,w:{"2025-W48":1,"2025-W49":2,"2025-W50":13,"2025-W51":5,"2026-W2":7,"2026-W5":2,"2026-W6":1,"2026-W36":2,"2026-W32":3,"2026-W27":1}},
+  {tid:"AE5QJFCD0PTFU",s:["UIT4"],l:30,g:15,t:45,w:{"2025-W48":4,"2025-W49":9,"2025-W50":15,"2025-W52":5,"2026-W2":6,"2026-W37":1,"2026-W36":2}},
+  {tid:"AVG0Z3EKUPTYE",s:["UIT4"],l:33,g:10,t:43,w:{"2025-W48":1,"2025-W49":2,"2025-W50":13,"2025-W51":5,"2026-W2":7,"2026-W5":2,"2026-W6":1,"2026-W36":2,"2026-W32":3,"2026-W27":1}},
+  {tid:"A3UD94Q70561NT",s:["UIT1","UIT7"],l:30,g:8,t:38,w:{"2025-W48":2,"2025-W50":5,"2025-W51":4,"2025-W52":1,"2026-W1":4,"2026-W2":7,"2026-W5":1,"2026-W6":8,"2026-W7":4,"2026-W37":1}},
   {tid:"AH60BA77IO1NM",s:["UIT4"],l:22,g:13,t:35,w:{"2025-W49":2,"2025-W50":11,"2025-W51":13,"2026-W5":3,"2026-W7":6}},
   {tid:"A3HASZK5EP9RI3",s:["UIT4"],l:25,g:10,t:35,w:{"2025-W50":2,"2025-W51":11,"2025-W52":11,"2026-W6":6,"2026-W7":1,"2026-W8":3}},
-  {tid:"A26QCN2R3RHUL0",s:["UIT4"],l:22,g:11,t:33,w:{"2025-W50":13,"2025-W51":7,"2025-W52":6,"2026-W2":4,"2026-W3":1,"2026-W36":2}},
+  {tid:"A26QCN2R3RHUL0",s:["UIT4"],l:23,g:12,t:35,w:{"2025-W50":13,"2025-W51":7,"2025-W52":6,"2026-W2":4,"2026-W3":1,"2026-W36":2}},
   {tid:"AW075GUQVI8S0",s:["UIT4"],l:23,g:9,t:32,w:{"2025-W48":2,"2025-W50":6,"2025-W51":1,"2025-W52":12,"2026-W2":7,"2026-W4":1,"2026-W5":1,"2026-W8":2}},
-  {tid:"A12RS30DTIRY4F",s:["UIL7","UIT1","UIT7"],l:18,g:11,t:29,w:{"2025-W52":2,"2026-W2":11,"2026-W3":3,"2026-W4":1,"2026-W5":3,"2026-W7":6,"2026-W36":3}},
+  {tid:"A12RS30DTIRY4F",s:["UIL7","UIT1","UIT7"],l:20,g:12,t:32,w:{"2025-W52":2,"2026-W2":11,"2026-W3":3,"2026-W4":1,"2026-W5":3,"2026-W7":6,"2026-W36":3}},
+  {tid:"A1QVBCU0UM920I",s:["UIT4"],l:23,g:8,t:31,w:{"2025-W48":2,"2025-W50":6,"2025-W51":11,"2026-W2":3,"2026-W5":3,"2026-W31":1,"2026-W27":2}},
   {tid:"AHWNMVNKEB1FS",s:["UIT4"],l:20,g:8,t:28,w:{"2025-W50":8,"2025-W52":10,"2026-W1":1,"2026-W2":1,"2026-W5":8}},
-  {tid:"A1QVBCU0UM920I",s:["UIT4"],l:20,g:8,t:28,w:{"2025-W48":2,"2025-W50":6,"2025-W51":11,"2026-W2":3,"2026-W5":3,"2026-W31":1,"2026-W27":2}},
   {tid:"AWF7GO53ALI75",s:["UIT4"],l:17,g:10,t:27,w:{"2025-W49":5,"2025-W50":11,"2026-W2":2,"2026-W4":8,"2026-W5":1}},
+  {tid:"AXF6DOVKJAJOP",s:["UIT1"],l:17,g:10,t:27,w:{"2025-W48":1,"2025-W49":2,"2025-W50":1,"2025-W51":1,"2026-W2":6,"2026-W6":8,"2026-W36":4}},
+  {tid:"A88NGBVO9JRUL",s:["UIT1"],l:18,g:9,t:27,w:{"2025-W49":2,"2026-W3":6,"2026-W5":9,"2026-W37":1,"2026-W36":2,"2026-W34":2}},
   {tid:"A1KAYXHWHSMPZA",s:["UIT4"],l:20,g:6,t:26,w:{"2025-W48":1,"2025-W49":1,"2025-W50":3,"2025-W51":1,"2025-W52":2,"2026-W2":15,"2026-W5":1,"2026-W6":2}},
   {tid:"AU6QWQ72H340O",s:["UIT4"],l:17,g:9,t:26,w:{"2025-W50":9,"2026-W1":11,"2026-W2":3,"2026-W4":2,"2026-W8":1}},
-  {tid:"A1VBK3NCA1KUB6",s:["UIT4"],l:16,g:9,t:25,w:{"2025-W50":7,"2025-W51":12,"2026-W3":1,"2026-W5":4,"2026-W37":1}},
+  {tid:"A1VBK3NCA1KUB6",s:["UIT4"],l:17,g:9,t:26,w:{"2025-W50":7,"2025-W51":12,"2026-W3":1,"2026-W5":4,"2026-W37":1}},
+  {tid:"A97DJBAAIAEXE",s:["UIT4"],l:18,g:7,t:25,w:{"2025-W48":1,"2025-W50":15,"2026-W4":1,"2026-W5":6,"2026-W37":1}},
   {tid:"A2ETP4LPBDPCI7",s:["UIT4"],l:16,g:8,t:24,w:{"2025-W49":6,"2025-W50":5,"2026-W1":1,"2026-W2":11,"2026-W5":1}},
   {tid:"AAXP32AWYXD0S",s:["UIT1","UIT7"],l:17,g:7,t:24,w:{"2025-W47":6,"2025-W48":5,"2025-W49":3,"2025-W52":4,"2026-W3":6}},
   {tid:"ACWZU4JMSMOOL",s:["UIT4"],l:17,g:7,t:24,w:{"2025-W50":9,"2025-W51":1,"2026-W3":7,"2026-W4":2,"2026-W5":3,"2026-W6":1,"2026-W8":1}},
-  {tid:"A97DJBAAIAEXE",s:["UIT4"],l:17,g:7,t:24,w:{"2025-W48":1,"2025-W50":15,"2026-W4":1,"2026-W5":6,"2026-W37":1}},
   {tid:"A35KO91NJ8ZSL8",s:["UIT4"],l:15,g:8,t:23,w:{"2025-W50":8,"2025-W51":14,"2026-W5":1}},
   {tid:"A3E7636W999QQA",s:["UIT1","UIT7"],l:15,g:8,t:23,w:{"2025-W47":6,"2025-W48":1,"2026-W1":1,"2026-W2":6,"2026-W4":9}},
-  {tid:"AXF6DOVKJAJOP",s:["UIT1"],l:15,g:8,t:23,w:{"2025-W48":1,"2025-W49":2,"2025-W50":1,"2025-W51":1,"2026-W2":6,"2026-W6":8,"2026-W36":4}},
   {tid:"A35T9P10PKPSF7",s:["UIT1"],l:13,g:9,t:22,w:{"2025-W49":1,"2025-W50":6,"2025-W51":2,"2026-W2":1,"2026-W3":2,"2026-W4":5,"2026-W6":5}},
-  {tid:"A88NGBVO9JRUL",s:["UIT1"],l:15,g:7,t:22,w:{"2025-W49":2,"2026-W3":6,"2026-W5":9,"2026-W37":1,"2026-W36":2,"2026-W34":2}},
   {tid:"A34LGXU73LL9BM",s:["UIT4"],l:16,g:4,t:20,w:{"2025-W50":9,"2026-W2":2,"2026-W3":2,"2026-W4":2,"2026-W6":4,"2026-W8":1}},
   {tid:"A35T5XCFYQTKPZ",s:["UIT4"],l:14,g:5,t:19,w:{"2025-W49":3,"2026-W2":3,"2026-W3":8,"2026-W5":5}},
   {tid:"A37QIPNRMFHW6E",s:["UIT4"],l:12,g:7,t:19,w:{"2025-W48":3,"2025-W49":6,"2025-W50":5,"2026-W5":5}},
   {tid:"A7LUMWFCCJKDL",s:["UIT4"],l:15,g:4,t:19,w:{"2025-W48":1,"2025-W50":1,"2025-W51":1,"2025-W52":1,"2026-W4":12,"2026-W5":3}},
   {tid:"ATW6H2SY8PT9I",s:["UIT4"],l:16,g:3,t:19,w:{"2025-W49":1,"2025-W50":7,"2025-W51":7,"2026-W2":2,"2026-W7":1,"2026-W8":1}},
   {tid:"A36OXLLD8DZUBB",s:["UIT4"],l:14,g:3,t:17,w:{"2025-W48":1,"2025-W49":1,"2025-W50":2,"2025-W51":3,"2025-W52":3,"2026-W2":4,"2026-W5":3}},
-  {tid:"A1E4N9160LZCJA",s:["UIT1"],l:6,g:2,t:8,w:{"2026-W8":3,"2026-W37":5}},
-  {tid:"A26NKN80OE6DV1",s:["UIT1","UIL7"],l:7,g:1,t:8,w:{"2026-W7":4,"2026-W31":1,"2026-W27":3}},
-  {tid:"A3RMHPGM74KVUJ",s:["UIT1"],l:4,g:3,t:7,w:{"2026-W7":1,"2026-W36":6}},
-  {tid:"A16TPO0SUHU8I2",s:["UIL7"],l:4,g:3,t:7,w:{"2026-W36":7}},
-  {tid:"A2SH0J04PT9934",s:["UIL7"],l:3,g:3,t:6,w:{"2026-W32":2,"2026-W31":4}},
+  {tid:"A16TPO0SUHU8I2",s:["UIL7"],l:8,g:6,t:14,w:{"2026-W36":7}},
+  {tid:"A1E4N9160LZCJA",s:["UIT1"],l:9,g:4,t:13,w:{"2026-W8":3,"2026-W37":5}},
+  {tid:"A3RMHPGM74KVUJ",s:["UIT1"],l:7,g:6,t:13,w:{"2026-W7":1,"2026-W36":6}},
+  {tid:"A26NKN80OE6DV1",s:["UIT1","UIL7"],l:10,g:2,t:12,w:{"2026-W7":4,"2026-W31":1,"2026-W27":3}},
+  {tid:"A2SH0J04PT9934",s:["UIL7"],l:6,g:6,t:12,w:{"2026-W32":2,"2026-W31":4}},
+  {tid:"A2MGPR3KLEMC1A",s:["UIT1"],l:6,g:2,t:8,w:{"2026-W37":3,"2026-W36":1}},
+  {tid:"AMTECUI0XY11T",s:["UIT1"],l:8,g:0,t:8,w:{"2026-W29":1,"2026-W28":3}},
+  {tid:"A2G2BQMDZK22FB",s:["UIT1"],l:4,g:3,t:7,w:{"2026-W7":3,"2026-W36":2}},
+  {tid:"A2W61QFD0UM92J",s:["UIT1","UIL7"],l:7,g:0,t:7,w:{"2026-W7":3,"2026-W34":2}},
+  {tid:"A8E1OB66TNUSO",s:["UIT4"],l:5,g:2,t:7,w:{"2026-W8":1,"2026-W37":3}},
+  {tid:"A24QXY3T6QD6HI",s:["UIT4"],l:4,g:2,t:6,w:{"2026-W27":3}},
   {tid:"A5RCJALTYW9J7",s:["UBA1"],l:3,g:2,t:5,w:{"2026-W7":5}},
-  {tid:"A2G2BQMDZK22FB",s:["UIT1"],l:3,g:2,t:5,w:{"2026-W7":3,"2026-W36":2}},
-  {tid:"A2W61QFD0UM92J",s:["UIT1","UIL7"],l:5,g:0,t:5,w:{"2026-W7":3,"2026-W34":2}},
-  {tid:"A8E1OB66TNUSO",s:["UIT4"],l:3,g:1,t:4,w:{"2026-W8":1,"2026-W37":3}},
-  {tid:"A2MGPR3KLEMC1A",s:["UIT1"],l:3,g:1,t:4,w:{"2026-W37":3,"2026-W36":1}},
-  {tid:"AMTECUI0XY11T",s:["UIT1"],l:4,g:0,t:4,w:{"2026-W29":1,"2026-W28":3}},
-  {tid:"AAHWPKIHARD9Y",s:["UIT1"],l:2,g:1,t:3,w:{"2026-W8":2,"2026-W36":1}},
-  {tid:"A3116G3MEA2IX5",s:["UIT1","UIL7"],l:3,g:0,t:3,w:{"2026-W8":1,"2026-W33":1,"2026-W27":1}},
-  {tid:"A24QXY3T6QD6HI",s:["UIT4"],l:2,g:1,t:3,w:{"2026-W27":3}},
+  {tid:"A3116G3MEA2IX5",s:["UIT1","UIL7"],l:5,g:0,t:5,w:{"2026-W8":1,"2026-W33":1,"2026-W27":1}},
+  {tid:"AAHWPKIHARD9Y",s:["UIT1"],l:3,g:1,t:4,w:{"2026-W8":2,"2026-W36":1}},
+  {tid:"ANWEDYH2UUXUI",s:["UIT1"],l:2,g:2,t:4,w:{"2026-W37":2}},
+  {tid:"AP5YJG0BUXJ9O",s:["UIT1"],l:4,g:0,t:4,w:{"2026-W37":1,"2026-W36":1}},
+  {tid:"A315HN3KMOW80N",s:["UIT4"],l:4,g:0,t:4,w:{"2026-W37":2}},
+  {tid:"A3RAM736Z7WF43",s:["UIT1"],l:2,g:2,t:4,w:{"2026-W36":2}},
+  {tid:"A887OQHXEMN1O",s:["UIT1"],l:4,g:0,t:4,w:{"2026-W36":2}},
+  {tid:"AW3STBJS8T4RJ",s:["UIT1"],l:4,g:0,t:4,w:{"2026-W34":2}},
+  {tid:"A1X46PBP3JSLH0",s:["UIT1"],l:2,g:2,t:4,w:{"2026-W32":2}},
+  {tid:"AG6T008EE2QH6",s:["UIT4"],l:3,g:0,t:3,w:{"2026-W7":1,"2026-W36":1}},
   {tid:"A2KI4J54TJVRD1",s:["UIT1"],l:1,g:1,t:2,w:{"2026-W8":2}},
   {tid:"AWPKQW2HKLE5I",s:["UIL7"],l:1,g:1,t:2,w:{"2026-W7":2}},
-  {tid:"AG6T008EE2QH6",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W7":1,"2026-W36":1}},
-  {tid:"ANWEDYH2UUXUI",s:["UIT1"],l:1,g:1,t:2,w:{"2026-W37":2}},
-  {tid:"AP5YJG0BUXJ9O",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W37":1,"2026-W36":1}},
-  {tid:"A315HN3KMOW80N",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W37":2}},
-  {tid:"A3RAM736Z7WF43",s:["UIT1"],l:1,g:1,t:2,w:{"2026-W36":2}},
-  {tid:"A887OQHXEMN1O",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W36":2}},
-  {tid:"AW3STBJS8T4RJ",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W34":2}},
-  {tid:"A1X46PBP3JSLH0",s:["UIT1"],l:1,g:1,t:2,w:{"2026-W32":2}},
+  {tid:"A37QNZXGYFKA07",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W37":1}},
+  {tid:"A1YBTZWSCR0T6A",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W37":1}},
+  {tid:"AIBL7UZKQBFKX",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W36":1}},
+  {tid:"A3HJVV8X9PFVFE",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W36":1}},
+  {tid:"A3S118S8BD258G",s:["UIT1"],l:2,g:0,t:2,w:{"2026-W34":1}},
+  {tid:"A29XO7CRN7MHCW",s:["UIL7"],l:2,g:0,t:2,w:{"2026-W33":1}},
+  {tid:"A2WU7G4QB2KEM6",s:["UIL7"],l:2,g:0,t:2,w:{"2026-W33":1}},
+  {tid:"A2KZIZCT0B70EK",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W31":1}},
+  {tid:"A3V0WHAK317PM9",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W30":1}},
+  {tid:"A14HNFYUNNWIOM",s:["UIT4"],l:2,g:0,t:2,w:{"2026-W27":1}},
   {tid:"A36ATUOKYN2N4A",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W8":1}},
   {tid:"AJBGQ35XQAHQ2",s:["UIT1"],l:1,g:0,t:1,w:{"2026-W7":1}},
   {tid:"ADR55ODP5WOJ7",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W7":1}},
   {tid:"A20GNNM65U5LV1",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W7":1}},
-  {tid:"A3OSZ1G9ERRUK6",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W7":1}},
-  {tid:"A37QNZXGYFKA07",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W37":1}},
-  {tid:"A1YBTZWSCR0T6A",s:["UIT1"],l:1,g:0,t:1,w:{"2026-W37":1}},
-  {tid:"AIBL7UZKQBFKX",s:["UIT1"],l:1,g:0,t:1,w:{"2026-W36":1}},
-  {tid:"A3HJVV8X9PFVFE",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W36":1}},
-  {tid:"A3S118S8BD258G",s:["UIT1"],l:1,g:0,t:1,w:{"2026-W34":1}},
-  {tid:"A29XO7CRN7MHCW",s:["UIL7"],l:1,g:0,t:1,w:{"2026-W33":1}},
-  {tid:"A2WU7G4QB2KEM6",s:["UIL7"],l:1,g:0,t:1,w:{"2026-W33":1}},
-  {tid:"A2KZIZCT0B70EK",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W31":1}},
-  {tid:"A3V0WHAK317PM9",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W30":1}},
-  {tid:"A14HNFYUNNWIOM",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W27":1}}
+  {tid:"A3OSZ1G9ERRUK6",s:["UIT4"],l:1,g:0,t:1,w:{"2026-W7":1}}
 ];
 function LateCell({val,isGt15}) {
   if (!val) return <td style={{padding:"3px 5px",textAlign:"center",fontSize:10,fontFamily:"'DM Mono',monospace",color:"#1e293b"}}>·</td>;
@@ -1027,6 +1033,81 @@ const GEO_DATA = {
   ],
 };
 
+// ─── PRODUCTIVITY — stops per route (Orders ÷ Routes) por estación y semana ─
+// Fuente: QuickSight Lighthouse › Business Metrics (Show By = Station Code, semanal).
+// Lo rellena scripts/lighthouse_to_dashboard.py — no editar a mano.
+const PRODUCTIVITY = {
+  UIT4: [
+    {year:2026,week:"W27",orders:3228,routes:710},
+    {year:2026,week:"W28",orders:3241,routes:703},
+    {year:2026,week:"W29",orders:3027,routes:671},
+    {year:2026,week:"W30",orders:2972,routes:649},
+    {year:2026,week:"W31",orders:2813,routes:635},
+    {year:2026,week:"W32",orders:2211,routes:487},
+    {year:2026,week:"W33",orders:1856,routes:397},
+    {year:2026,week:"W34",orders:2390,routes:543},
+    {year:2026,week:"W35",orders:2964,routes:706},
+    {year:2026,week:"W36",orders:3949,routes:883},
+    {year:2026,week:"W37",orders:2488,routes:580},
+  ],
+  UIT1: [
+    {year:2026,week:"W27",orders:1832,routes:368},
+    {year:2026,week:"W28",orders:1614,routes:329},
+    {year:2026,week:"W29",orders:1493,routes:307},
+    {year:2026,week:"W30",orders:1347,routes:275},
+    {year:2026,week:"W31",orders:1273,routes:272},
+    {year:2026,week:"W32",orders:1006,routes:213},
+    {year:2026,week:"W33",orders:683,routes:172},
+    {year:2026,week:"W34",orders:929,routes:223},
+    {year:2026,week:"W35",orders:1360,routes:299},
+    {year:2026,week:"W36",orders:2215,routes:456},
+    {year:2026,week:"W37",orders:1401,routes:303},
+  ],
+  UIT7: [
+  ],
+  UBA1: [
+    {year:2026,week:"W27",orders:539,routes:111},
+    {year:2026,week:"W28",orders:511,routes:111},
+    {year:2026,week:"W29",orders:437,routes:82},
+    {year:2026,week:"W30",orders:406,routes:85},
+    {year:2026,week:"W31",orders:433,routes:87},
+    {year:2026,week:"W32",orders:340,routes:70},
+    {year:2026,week:"W33",orders:175,routes:34},
+    {year:2026,week:"W34",orders:164,routes:31},
+    {year:2026,week:"W35",orders:282,routes:52},
+    {year:2026,week:"W36",orders:445,routes:94},
+    {year:2026,week:"W37",orders:301,routes:72},
+  ],
+  UIL7: [
+    {year:2026,week:"W27",orders:564,routes:67},
+    {year:2026,week:"W28",orders:504,routes:65},
+    {year:2026,week:"W29",orders:499,routes:62},
+    {year:2026,week:"W30",orders:474,routes:63},
+    {year:2026,week:"W31",orders:523,routes:67},
+    {year:2026,week:"W32",orders:435,routes:55},
+    {year:2026,week:"W33",orders:386,routes:46},
+    {year:2026,week:"W34",orders:391,routes:48},
+    {year:2026,week:"W35",orders:506,routes:66},
+    {year:2026,week:"W36",orders:578,routes:74},
+    {year:2026,week:"W37",orders:378,routes:43},
+  ],
+};
+// Objetivo stops/route por estación (P75 de las semanas cargadas al crearse; editable a mano)
+const SPR_TARGET = {UIT4:4.6,UIT1:4.9,UBA1:5.2,UIL7:8.3};
+
+// ─── PRODUCTIVITY: tooltip y etiquetas (valores sin «%») ────────────
+function SprTooltip({active,payload,label}) {
+  if (!active||!payload?.length) return null;
+  return (<div style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:6,padding:"8px 12px",boxShadow:"0 8px 32px rgba(0,0,0,0.5)"}}>
+    <p style={{color:"#64748b",fontSize:10,margin:"0 0 4px",fontFamily:"'DM Mono',monospace"}}>{label}</p>
+    {payload.filter(p=>p.value!=null).map((p,i)=>{const row=p.payload||{};const o=row[p.name+"_o"],r=row[p.name+"_r"];return(<p key={i} style={{color:p.stroke||p.color,fontSize:11,margin:"2px 0",fontFamily:"'DM Mono',monospace"}}>{p.name}: <strong>{Number(p.value).toFixed(2)}</strong>{o!=null&&<span style={{color:"#64748b"}}> · {o.toLocaleString()} / {r}</span>}</p>);})}
+  </div>);
+}
+function SprLabel({x,y,value,color}) {
+  if (value==null||x==null) return null;
+  return <text x={x} y={y-7} fill={color} fontSize={9} fontFamily="DM Mono" textAnchor="middle" opacity={0.9}>{Number(value).toFixed(1)}</text>;
+}
+
 function getStatusConfig(d) {
   if (!d || d.late == null) return {bg:"#1e293b",border:"#475569",text:"#94a3b8",label:"NO DATA",icon:"?"};
   if (d.late > 6 || (d.fondCtrl != null && d.fondCtrl > 2)) return {bg:"#450a0a",border:"#dc2626",text:"#fca5a5",label:"CRITICAL",icon:"◆"};
@@ -1216,6 +1297,7 @@ function DashboardInner() {
   const [lateMinDefects, setLateMinDefects] = useState(5);
   const [lateViewMode, setLateViewMode] = useState("combined");
   const [scorecardMinTotal, setScorecardMinTotal] = useState(5);
+  const [sprShowValues, setSprShowValues] = useState(true);
   const [flowDefect, setFlowDefect] = useState(null);
   const [flowAttr, setFlowAttr] = useState(null);
   const [flowSite, setFlowSite] = useState(null);
@@ -1425,6 +1507,34 @@ function DashboardInner() {
     return { combined: nccSum+lateSum, nccSum, lateSum, gt15Sum, dual, count: scorecardFiltered.length };
   }, [scorecardFiltered]);
 
+  // ── Productividad: stops per route (Orders ÷ Routes) con filtros globales ──
+  const prodDepots = useMemo(() => selectedDepots.filter(d => (PRODUCTIVITY[d]||[]).length), [selectedDepots]);
+  const sprWeekly = useMemo(() => {
+    const keys = []; const seen = new Set();
+    prodDepots.forEach(d => (PRODUCTIVITY[d]||[]).filter(fullFilter).forEach(r => { const k=`${r.year}-${r.week}`; if(!seen.has(k)){ seen.add(k); keys.push({year:r.year,week:r.week,sk:sortKey(r.year,r.week)}); } }));
+    keys.sort((a,b)=>a.sk-b.sk);
+    return keys.map(({year,week}) => {
+      const row = { label: selectedYear==="ALL" ? `${week}'${String(year).slice(2)}` : week, year, week };
+      let o=0, rt=0;
+      prodDepots.forEach(d => { const e=(PRODUCTIVITY[d]||[]).find(r=>r.year===year&&r.week===week); row[d]= e&&e.routes ? +(e.orders/e.routes).toFixed(2) : null; row[d+"_o"]=e?e.orders:null; row[d+"_r"]=e?e.routes:null; if(e){ o+=e.orders; rt+=e.routes; } });
+      row.network = rt ? +(o/rt).toFixed(2) : null;
+      return row;
+    });
+  }, [prodDepots, selectedYear, effectiveFrom, effectiveTo]);
+  const sprStats = useMemo(() => {
+    const out = {};
+    prodDepots.forEach(d => {
+      const rows=(PRODUCTIVITY[d]||[]).filter(fullFilter).sort((a,b)=>sortKey(a.year,a.week)-sortKey(b.year,b.week));
+      const vals=rows.filter(r=>r.routes).map(r=>r.orders/r.routes);
+      const last=rows[rows.length-1], prev=rows[rows.length-2];
+      out[d]={ last:last&&last.routes?last.orders/last.routes:null, lastWeek:last?(selectedYear==="ALL"?`${last.week}'${String(last.year).slice(2)}`:last.week):null,
+        prev:prev&&prev.routes?prev.orders/prev.routes:null, avg:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null,
+        orders:rows.reduce((a,r)=>a+r.orders,0), routes:rows.reduce((a,r)=>a+r.routes,0), target:SPR_TARGET[d]??null };
+    });
+    return out;
+  }, [prodDepots, selectedYear, effectiveFrom, effectiveTo]);
+  const sprCell = (val, tgt) => { if(val==null) return {bg:"#0f172a",color:"#334155"}; if(!tgt) return {bg:"#1e293b",color:"#e2e8f0"}; const r=val/tgt; return r>=0.9?{bg:"#052e16",color:"#86efac"}:r>=0.8?{bg:"#451a03",color:"#fcd34d"}:{bg:"#450a0a",color:"#fca5a5"}; };
+
   const tabStyle = active => ({background:active?"#1e293b":"transparent",border:active?"1px solid #334155":"1px solid transparent",color:active?"#e2e8f0":"#64748b",borderRadius:6,padding:isMobile?"5px 10px":"6px 14px",cursor:"pointer",fontSize:isMobile?10:11,fontWeight:600,fontFamily:"'DM Mono',monospace",transition:"all 0.2s",letterSpacing:0.3,whiteSpace:"nowrap"});
   const cellStyle = (val,th) => { if(val==null) return {bg:"#0f172a",color:"#334155"}; if(val>th[1]) return {bg:"#450a0a",color:"#fca5a5"}; if(val>th[0]) return {bg:"#451a03",color:"#fcd34d"}; return {bg:"#052e16",color:"#86efac"}; };
 
@@ -1452,10 +1562,10 @@ function DashboardInner() {
           </div>
         </div>
         <div style={{display:"flex",gap:4,marginTop:isMobile?14:18,overflowX:isMobile?"auto":"visible",paddingBottom:isMobile?4:0,WebkitOverflowScrolling:"touch"}}>
-          {[{key:"overview",l:"tabOverview"},{key:"depots",l:"tabDepots"},{key:"upstream",l:"tabUpstream"},{key:"cycles",l:"tabCycles"},{key:"ncc",l:"tabNcc"},{key:"late",l:"tabLate"},{key:"scorecard",l:"tabScorecard"},{key:"flow",l:"tabFlow"},{key:"geo",l:"tabGeo"}].map(tab=>{
-            const isSpecial = tab.key==="ncc"||tab.key==="late"||tab.key==="scorecard"||tab.key==="flow"||tab.key==="geo";
+          {[{key:"overview",l:"tabOverview"},{key:"depots",l:"tabDepots"},{key:"upstream",l:"tabUpstream"},{key:"cycles",l:"tabCycles"},{key:"ncc",l:"tabNcc"},{key:"late",l:"tabLate"},{key:"scorecard",l:"tabScorecard"},{key:"productivity",l:"tabProductivity"},{key:"flow",l:"tabFlow"},{key:"geo",l:"tabGeo"}].map(tab=>{
+            const isSpecial = tab.key==="ncc"||tab.key==="late"||tab.key==="scorecard"||tab.key==="productivity"||tab.key==="flow"||tab.key==="geo";
             const isActive = selectedView===tab.key;
-            const specialColors = tab.key==="ncc"?{bg:"#7c2d12",border:"#ea580c",text:"#fb923c",dot:"#ea580c"}:tab.key==="late"?{bg:"#1e1b4b",border:"#6366f1",text:"#a5b4fc",dot:"#6366f1"}:tab.key==="flow"?{bg:"#134e4a",border:"#0d9488",text:"#5eead4",dot:"#0d9488"}:tab.key==="geo"?{bg:"#1a1035",border:"#8b5cf6",text:"#c4b5fd",dot:"#8b5cf6"}:{bg:"#14532d",border:"#22c55e",text:"#86efac",dot:"#22c55e"};
+            const specialColors = tab.key==="ncc"?{bg:"#7c2d12",border:"#ea580c",text:"#fb923c",dot:"#ea580c"}:tab.key==="late"?{bg:"#1e1b4b",border:"#6366f1",text:"#a5b4fc",dot:"#6366f1"}:tab.key==="productivity"?{bg:"#422006",border:"#f59e0b",text:"#fde68a",dot:"#f59e0b"}:tab.key==="flow"?{bg:"#134e4a",border:"#0d9488",text:"#5eead4",dot:"#0d9488"}:tab.key==="geo"?{bg:"#1a1035",border:"#8b5cf6",text:"#c4b5fd",dot:"#8b5cf6"}:{bg:"#14532d",border:"#22c55e",text:"#86efac",dot:"#22c55e"};
             return(<button key={tab.key} onClick={()=>setSelectedView(tab.key)} style={{...tabStyle(isActive),
               ...(isSpecial&&isActive?{background:specialColors.bg,borderColor:specialColors.border,color:specialColors.text}:{})
             }}>{isSpecial&&<span style={{display:"inline-block",width:6,height:6,borderRadius:"50%",background:isActive?specialColors.dot:(specialColors.dot+"60"),marginRight:5,verticalAlign:"middle"}}/>}{t(tab.l)}</button>);
@@ -2204,6 +2314,60 @@ function DashboardInner() {
           </div>
         </>);
         })()}
+
+        {/* ── PRODUCTIVITY: STOPS PER ROUTE ── */}
+        {selectedView==="productivity"&&(<>
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":`repeat(${Math.min(4,Math.max(1,prodDepots.length))},1fr)`,gap:12,marginBottom:20}}>
+            {prodDepots.map(d=>{const st=sprStats[d]; const tgt=st.target; const ratio=st.last!=null&&tgt?st.last/tgt:null; const col=ratio==null?"#94a3b8":ratio<0.8?"#fca5a5":ratio<0.9?"#fcd34d":"#86efac"; const delta=st.last!=null&&st.prev!=null?st.last-st.prev:null; return(
+              <div key={d} style={{background:"#0f172a",border:`1px solid ${DEPOT_COLORS[d]}30`,borderLeft:`3px solid ${DEPOT_COLORS[d]}`,borderRadius:10,padding:isMobile?"14px":"16px 18px"}}>
+                <div style={{display:"flex",alignItems:"baseline",gap:8}}><span style={{fontSize:15,fontWeight:800,color:DEPOT_COLORS[d],fontFamily:"'Outfit',sans-serif"}}>{d}</span><span style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace"}}>{DEPOT_LABELS[d]}</span><span style={{marginLeft:"auto",fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{st.lastWeek||"—"}</span></div>
+                <div style={{display:"flex",alignItems:"baseline",gap:8,marginTop:8}}><span style={{fontSize:28,fontWeight:800,color:col,fontFamily:"'Outfit',sans-serif"}}>{st.last!=null?st.last.toFixed(1):"—"}</span><span style={{fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace"}}>{t("sprUnit")}</span>{delta!=null&&<span style={{fontSize:10,fontWeight:700,color:delta>=0?"#86efac":"#fca5a5",fontFamily:"'DM Mono',monospace"}}>{delta>=0?"▲":"▼"} {Math.abs(delta).toFixed(1)}</span>}</div>
+                <div style={{display:"flex",gap:12,marginTop:8,fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",flexWrap:"wrap"}}><span>{t("sprAvg")} <b style={{color:"#94a3b8"}}>{st.avg!=null?st.avg.toFixed(1):"—"}</b></span><span>{t("sprTarget")} <b style={{color:"#94a3b8"}}>{tgt!=null?tgt.toFixed(1):"—"}</b></span><span>{st.orders.toLocaleString()} {t("sprOrders").toLowerCase()} / {st.routes.toLocaleString()} {t("sprRoutes").toLowerCase()}</span></div>
+              </div>);})}
+          </div>
+          <div style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:10,padding:"20px",marginBottom:20}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14,flexWrap:"wrap",gap:8}}>
+              <h3 style={{fontSize:11,fontWeight:700,color:"#64748b",margin:0,fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase"}}>{t("sprTitle")} — {effectiveFrom} → {effectiveTo} / {yearLabel}</h3>
+              <button onClick={()=>setSprShowValues(v=>!v)} style={{background:sprShowValues?"#1e293b":"transparent",border:sprShowValues?"1px solid #475569":"1px solid #1e293b",color:sprShowValues?"#e2e8f0":"#475569",borderRadius:4,padding:"3px 8px",cursor:"pointer",fontSize:9,fontWeight:600,fontFamily:"'DM Mono',monospace"}}>{t("sprValues")}</button>
+            </div>
+            {sprWeekly.length===0 ? <div style={{padding:"40px 0",textAlign:"center",fontSize:11,color:"#475569",fontFamily:"'DM Mono',monospace"}}>— no data in range —</div> : (
+            <ResponsiveContainer width="100%" height={isMobile?260:360}>
+              <LineChart data={sprWeekly} margin={{top:18,right:isMobile?10:30,bottom:5,left:0}}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
+                <XAxis dataKey="label" tick={{fill:"#475569",fontSize:9,fontFamily:"DM Mono"}} axisLine={{stroke:"#1e293b"}} interval={Math.max(0,Math.floor(sprWeekly.length/16))}/>
+                <YAxis tick={{fill:"#475569",fontSize:9,fontFamily:"DM Mono"}} axisLine={{stroke:"#1e293b"}} domain={[0,"auto"]}/>
+                <Tooltip content={<SprTooltip/>}/>
+                {prodDepots.map(d=>(<Line key={d} type="monotone" dataKey={d} stroke={DEPOT_COLORS[d]} strokeWidth={2} dot={{r:2.5,fill:DEPOT_COLORS[d],strokeWidth:0}} activeDot={{r:5}} name={d} connectNulls isAnimationActive={false} label={sprShowValues?<SprLabel color={DEPOT_COLORS[d]}/>:false}/>))}
+              </LineChart>
+            </ResponsiveContainer>)}
+            <div style={{display:"flex",gap:16,justifyContent:"center",marginTop:8,flexWrap:"wrap"}}>
+              {prodDepots.map(d=>(<div key={d} style={{display:"flex",alignItems:"center",gap:5,fontSize:10,color:DEPOT_COLORS[d],fontFamily:"'DM Mono',monospace"}}><div style={{width:12,height:3,borderRadius:2,background:DEPOT_COLORS[d]}}/>{d}</div>))}
+            </div>
+          </div>
+          <div style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:10,padding:"16px",overflowX:"auto"}}>
+            <h3 style={{fontSize:11,fontWeight:700,color:"#64748b",margin:"0 0 12px",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase"}}>{t("sprTable")}</h3>
+            <table style={{width:"100%",borderCollapse:"separate",borderSpacing:"2px 3px",minWidth:sprWeekly.length*52+160}}>
+              <thead><tr>
+                <th style={{padding:"6px",fontSize:8,color:"#475569",textAlign:"left",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",minWidth:70}}>{t("station")}</th>
+                <th style={{padding:"6px",fontSize:8,color:"#475569",textAlign:"center",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase",width:50}}>{t("sprTarget")}</th>
+                {sprWeekly.map(r=><th key={r.label} style={{padding:"4px 3px",fontSize:8,color:"#475569",textAlign:"center",fontFamily:"'DM Mono',monospace",whiteSpace:"nowrap"}}>{r.label}</th>)}
+              </tr></thead>
+              <tbody>
+                {prodDepots.map(d=>(<tr key={d}>
+                  <td style={{padding:"5px 6px",fontSize:11,fontWeight:700,color:DEPOT_COLORS[d],fontFamily:"'DM Mono',monospace"}}>{d}</td>
+                  <td style={{padding:"5px 6px",fontSize:10,color:"#94a3b8",textAlign:"center",fontFamily:"'DM Mono',monospace"}}>{SPR_TARGET[d]!=null?SPR_TARGET[d].toFixed(1):"—"}</td>
+                  {sprWeekly.map(r=>{const v=r[d];const c=sprCell(v,SPR_TARGET[d]);return(<td key={r.label} title={v!=null?`${r[d+"_o"]} orders / ${r[d+"_r"]} routes`:""} style={{padding:"5px 4px",fontSize:10,fontWeight:600,textAlign:"center",fontFamily:"'DM Mono',monospace",borderRadius:3,background:c.bg,color:c.color}}>{v!=null?v.toFixed(1):"·"}</td>);})}
+                </tr>))}
+                <tr>
+                  <td style={{padding:"5px 6px",fontSize:10,fontWeight:700,color:"#94a3b8",fontFamily:"'DM Mono',monospace",borderTop:"1px solid #1e293b"}}>{t("sprNetwork")}</td>
+                  <td style={{borderTop:"1px solid #1e293b"}}/>
+                  {sprWeekly.map(r=><td key={r.label} style={{padding:"5px 4px",fontSize:10,fontWeight:600,textAlign:"center",fontFamily:"'DM Mono',monospace",color:"#e2e8f0",borderTop:"1px solid #1e293b"}}>{r.network!=null?r.network.toFixed(1):"·"}</td>)}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style={{marginTop:14,padding:"12px 16px",background:"#0f172a",border:"1px solid #1e293b",borderRadius:8,fontSize:9,color:"#64748b",fontFamily:"'DM Mono',monospace",lineHeight:1.6}}>{t("sprNote")}</div>
+        </>)}
 
         {/* FOOTER */}
         <div style={{textAlign:"center",padding:"20px 0 8px",marginTop:24,borderTop:"1px solid #1e293b"}}>
