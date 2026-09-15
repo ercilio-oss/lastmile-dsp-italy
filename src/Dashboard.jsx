@@ -1109,8 +1109,100 @@ function DepotCard({depot,weekData}) {
   );
 }
 
+// ─── ACCESO CON CONTRASEÑA (front-end) ──────────────────────────────
+// La contraseña no viaja a ningún servidor: se compara el SHA-256 de
+// "<ACCESS_SALT>:<contraseña>" con ACCESS_HASH. Para cambiarla:
+//   python3 scripts/set_password.py "Nueva-Clave"   → commit → push
+const ACCESS_SALT = "lsrl-dsp-italy";
+const ACCESS_HASH = "63df2a885c27d1749e8324d90a387f54903af9da8dd3766e1f8cdfc7b8cec98c";
+const ACCESS_KEY = "dsp_it_access";
+const ACCESS_DAYS = 30;        // días que se recuerda el acceso en el dispositivo
+const ACCESS_MAX_TRIES = 5;    // intentos fallidos antes del bloqueo temporal
+const ACCESS_LOCK_MS = 30000;  // duración del bloqueo
+const GATE_T = {
+  en:{sub:"Restricted access",label:"Password",btn:"Enter",wrong:"Incorrect password",locked:"Too many attempts — wait {s}s",remember:"Remember this device for 30 days",https:"Secure context (https) required"},
+  it:{sub:"Accesso riservato",label:"Password",btn:"Entra",wrong:"Password errata",locked:"Troppi tentativi — attendi {s}s",remember:"Ricorda questo dispositivo per 30 giorni",https:"Serve una connessione sicura (https)"},
+  es:{sub:"Acceso restringido",label:"Contraseña",btn:"Entrar",wrong:"Contraseña incorrecta",locked:"Demasiados intentos — espera {s}s",remember:"Recordar este dispositivo 30 días",https:"Se requiere conexión segura (https)"},
+};
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function readAccess() {
+  for (const store of [localStorage, sessionStorage]) {
+    try {
+      const raw = store.getItem(ACCESS_KEY); if (!raw) continue;
+      const o = JSON.parse(raw);
+      if (o.h === ACCESS_HASH && o.exp > Date.now()) return true;
+      store.removeItem(ACCESS_KEY);
+    } catch (e) { /* almacenamiento no disponible */ }
+  }
+  return false;
+}
+function clearAccess() {
+  try { localStorage.removeItem(ACCESS_KEY); sessionStorage.removeItem(ACCESS_KEY); } catch (e) {}
+  window.location.reload();
+}
+if (typeof window !== "undefined") window.__dspLock = clearAccess;
+
+function PasswordGate({ children }) {
+  const [ok, setOk] = useState(readAccess);
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState("");
+  const [tries, setTries] = useState(0);
+  const [lockUntil, setLockUntil] = useState(0);
+  const [now, setNow] = useState(Date.now());
+  const [remember, setRemember] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const lang = (typeof navigator !== "undefined" ? navigator.language : "en").slice(0, 2);
+  const g = GATE_T[lang] || GATE_T.en;
+  useEffect(() => {
+    if (lockUntil <= Date.now()) return;
+    const id = setInterval(() => setNow(Date.now()), 500);
+    return () => clearInterval(id);
+  }, [lockUntil]);
+  if (ok) return children;
+  const locked = lockUntil > now;
+  const submit = async e => {
+    e.preventDefault();
+    if (locked || !pw || busy) return;
+    if (!window.crypto?.subtle) { setErr(g.https); return; }
+    setBusy(true);
+    const h = await sha256Hex(`${ACCESS_SALT}:${pw}`);
+    setBusy(false);
+    if (h === ACCESS_HASH) {
+      const payload = JSON.stringify({ h, exp: Date.now() + ACCESS_DAYS * 864e5 });
+      try { (remember ? localStorage : sessionStorage).setItem(ACCESS_KEY, payload); } catch (e) {}
+      setOk(true);
+      return;
+    }
+    const n = tries + 1; setPw("");
+    if (n >= ACCESS_MAX_TRIES) { setLockUntil(Date.now() + ACCESS_LOCK_MS); setTries(0); setNow(Date.now()); }
+    else { setTries(n); setErr(g.wrong); }
+  };
+  const secs = Math.max(0, Math.ceil((lockUntil - now) / 1000));
+  const mono = "'DM Mono',monospace";
+  return (
+    <div style={{background:"#030712",color:"#e2e8f0",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Outfit',sans-serif",padding:16}}>
+      <form onSubmit={submit} style={{width:"100%",maxWidth:360,background:"linear-gradient(135deg,#0f172a 0%,#030712 100%)",border:"1px solid #1e293b",borderRadius:12,padding:"28px 28px 24px",boxShadow:"0 20px 60px rgba(0,0,0,0.5)"}}>
+        <div style={{fontSize:10,fontWeight:600,color:"#f59e0b",fontFamily:mono,letterSpacing:2,textTransform:"uppercase",marginBottom:6}}>Last Mile DSP — Italy</div>
+        <h1 style={{fontSize:22,fontWeight:800,color:"#f8fafc",margin:0,letterSpacing:"-0.03em",lineHeight:1.1}}>Delivery Performance</h1>
+        <div style={{fontSize:11,color:"#64748b",fontFamily:mono,marginTop:6,marginBottom:22}}>{g.sub}</div>
+        <label style={{display:"block",fontSize:9,color:"#64748b",fontFamily:mono,letterSpacing:1.5,textTransform:"uppercase",marginBottom:6}}>{g.label}</label>
+        <input type="password" value={pw} onChange={e=>{setPw(e.target.value);setErr("");}} autoFocus autoComplete="current-password" disabled={locked}
+          style={{width:"100%",boxSizing:"border-box",background:"#0f172a",color:"#e2e8f0",border:`1px solid ${err?"#dc2626":"#334155"}`,borderRadius:6,padding:"10px 12px",fontSize:14,fontFamily:mono,outline:"none"}}/>
+        <label style={{display:"flex",alignItems:"center",gap:8,fontSize:10,color:"#94a3b8",fontFamily:mono,marginTop:12,cursor:"pointer"}}>
+          <input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)} style={{accentColor:"#f59e0b"}}/>{g.remember}
+        </label>
+        <div style={{minHeight:18,fontSize:10,color:"#fca5a5",fontFamily:mono,marginTop:10}}>{locked ? g.locked.replace("{s}", secs) : err}</div>
+        <button type="submit" disabled={locked||!pw||busy} style={{width:"100%",marginTop:6,background:locked||!pw?"#1e293b":"#f59e0b",color:locked||!pw?"#475569":"#030712",border:"none",borderRadius:6,padding:"10px 0",fontSize:12,fontWeight:800,fontFamily:mono,letterSpacing:1,textTransform:"uppercase",cursor:locked||!pw?"not-allowed":"pointer",transition:"all 0.15s"}}>{g.btn}</button>
+      </form>
+    </div>
+  );
+}
+
 // ─── MAIN DASHBOARD ─────────────────────────────────────────────────
-export default function Dashboard() {
+function DashboardInner() {
   const isMobile = useIsMobile();
   const [selectedView, setSelectedView] = useState("overview");
   const [selectedYear, setSelectedYear] = useState(2026);
@@ -2115,9 +2207,14 @@ export default function Dashboard() {
 
         {/* FOOTER */}
         <div style={{textAlign:"center",padding:"20px 0 8px",marginTop:24,borderTop:"1px solid #1e293b"}}>
-          <p style={{fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace",letterSpacing:1}}>{t("footer")} · {yearLabel} · {t("generated")} {new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}</p>
+          <p style={{fontSize:9,color:"#334155",fontFamily:"'DM Mono',monospace",letterSpacing:1}}><span onClick={()=>window.__dspLock&&window.__dspLock()} title="Lock dashboard" style={{cursor:"pointer",color:"#475569"}}>🔒 LOCK</span> · {t("footer")} · {yearLabel} · {t("generated")} {new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase()}</p>
         </div>
       </div>
     </div>
   );
+}
+
+// ─── EXPORT: dashboard protegido por contraseña ─────────────────────
+export default function Dashboard() {
+  return <PasswordGate><DashboardInner /></PasswordGate>;
 }
