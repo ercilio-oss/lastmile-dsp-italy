@@ -21,6 +21,7 @@ Convenciones:
   * Late (tabla de conductores) = ior_attribution == "Late Batch Ops Controllable" (class_late + class_late_gt15)
   * pondFP / pondPP = recuento de attribution que contiene "FTPDF FP" / "FTPDF PP" ÷ Orders de la semana
   * PRODUCTIVITY (stops per route) = Orders ÷ Routes de Business Metrics, por estación y semana
+  * FLOW_WEEKS (Defect Flow) = defectos a nivel de pedido agregados por semana/defecto/atribución/estación/TID (últimas 26 semanas)
   * Sólo se añaden semanas que aún no existen en el JSX (idempotente).
 """
 import csv, json, re, sys, glob, os, datetime as dt, argparse
@@ -254,6 +255,56 @@ def main():
                 tg[stn] = round(vals[lo] + (vals[hi] - vals[lo]) * (k - lo), 1)
         src = src.replace(mt.group(0), "const SPR_TARGET = {" + ",".join(f"{k}:{v}" for k, v in tg.items()) + "};")
         print("SPR_TARGET (P75):", tg)
+
+    # 3i. DEFECT FLOW por semana — pedido-nivel agregado por (defecto, atribución, estación, TID)
+    FLOW_KEEP_WEEKS = 26
+    def parse_js_array(name):
+        mm = re.search(r'const %s = (\[.*?\]);' % name, src, re.S)
+        return (json.loads(mm.group(1)) if mm else []), mm
+    flow_attr, m_attr = parse_js_array("FLOW_ATTR"); flow_tid, m_tid = parse_js_array("FLOW_TID")
+    m_weeks = re.search(r'const FLOW_WEEKS = \{\n(.*?)\n\};', src, re.S)
+    flow_weeks = {}
+    if m_weeks:
+        for line in m_weeks.group(1).splitlines():
+            line = line.strip().rstrip(",")
+            if not line: continue
+            k, _, v = line.partition(":"); flow_weeks[json.loads(k)] = json.loads(v)
+    aidx = {a: i for i, a in enumerate(flow_attr)}; tidx = {t: i for i, t in enumerate(flow_tid)}
+    def idx(table, index, val):
+        if val not in index: index[val] = len(table); table.append(val)
+        return index[val]
+    agg = defaultdict(lambda: defaultdict(int)); dorders = defaultdict(lambda: defaultdict(set))
+    for r in rows:
+        y, n = week_of(r["delivery_date"]); wk = wkey(y, n)
+        if wk in flow_weeks: continue  # semana ya cargada
+        stn = r["delivery_station_code"]; d = r["ior_defect"].replace("class_", "")
+        agg[wk][(d, idx(flow_attr, aidx, r["ior_attribution"]), stn, idx(flow_tid, tidx, r["transporter_id"]))] += 1
+        dorders[wk][stn].add(r["order_id"])
+    added = 0
+    for wk, combos in agg.items():
+        y, n = int(wk.split("-W")[0]), int(wk.split("-W")[1])
+        flow_weeks[wk] = {"o": {stn: orders.get((stn, (y, n)), 0) for stn in STATIONS if (stn, (y, n)) in orders},
+                          "d": {stn: len(ids) for stn, ids in dorders[wk].items()},
+                          "r": [[d, ai, stn, ti, c] for (d, ai, stn, ti), c in sorted(combos.items(), key=lambda kv: -kv[1])]}
+        added += 1
+    def wsort(k): y, n = k.split("-W"); return int(y) * 100 + int(n)
+    keep = sorted(flow_weeks, key=wsort)[-FLOW_KEEP_WEEKS:]
+    flow_weeks = {k: flow_weeks[k] for k in keep}
+    body = "\n".join(f'{json.dumps(k)}:{json.dumps(v, separators=(",", ":"), ensure_ascii=False)},' for k in keep for v in [flow_weeks[k]])
+    new_block = ("// ─── DEFECT FLOW por semana — generado por scripts/lighthouse_to_dashboard.py ──\n"
+                 "// FLOW_WEEKS[semana] = { o: pedidos por estación, d: pedidos con defecto por estación,\n"
+                 "//   r: [[defecto, idxFLOW_ATTR, estación, idxFLOW_TID, nº defectos], …] }\n"
+                 f"const FLOW_ATTR = {json.dumps(flow_attr, ensure_ascii=False)};\n"
+                 f"const FLOW_TID = {json.dumps(flow_tid)};\n"
+                 "const FLOW_WEEKS = {\n" + body + "\n};\n")
+    if m_weeks:
+        start = src.index("const FLOW_ATTR = ") if m_attr else m_weeks.start()
+        # sustituye desde el comentario de cabecera (si existe) hasta el cierre de FLOW_WEEKS
+        hdr = src.rfind("// ─── DEFECT FLOW por semana", 0, start); start = hdr if hdr != -1 else start
+        src = src[:start] + new_block + src[m_weeks.end() + 1:]
+    else:
+        src = src.replace("function getStatusConfig(d) {", new_block + "\nfunction getStatusConfig(d) {", 1)
+    print(f"FLOW_WEEKS: +{added} semanas (total {len(keep)}, {len(flow_attr)} atribuciones, {len(flow_tid)} TIDs)")
 
     # 3g. cabecera de rango en el comentario de datos
     last = weeks[-1]; src = src.replace("(Order-Level, W47/25–W7/26)", f"(Order-Level, W47/25–W{last[1]}/{str(last[0])[2:]})")
