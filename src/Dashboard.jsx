@@ -631,7 +631,6 @@ ALL_YEARS.forEach(y => {
 });
 
 const CYCLES = [{id:1,trough:"W4",peak:"W6",troughVal:2.11,peakVal:6.34},{id:2,trough:"W28",peak:"W25",troughVal:1.27,peakVal:4.35},{id:3,trough:"W35",peak:"W39",troughVal:0.44,peakVal:5.53},{id:4,trough:"W45",peak:"W51",troughVal:2.09,peakVal:7.03}];
-const UPSTREAM_DATA = [{depot:"UIT7",ctrl:0.09,upstream:0.36,total:0.45},{depot:"UIT1",ctrl:0.66,upstream:1.02,total:1.68},{depot:"UBA1",ctrl:0.61,upstream:1.06,total:1.67},{depot:"UIT4",ctrl:1.19,upstream:2.22,total:3.41},{depot:"UIL7",ctrl:0.75,upstream:0.00,total:0.75}];
 
 // ─── NCC (NOT CALL COMPLIANT) DATA ─────────────────────────────────
 const NCC_WEEKS = ["2025-W47","2025-W48","2025-W49","2025-W50","2025-W51","2025-W52","2026-W1","2026-W2","2026-W3","2026-W4","2026-W5","2026-W6","2026-W7","2026-W8","2026-W27","2026-W28","2026-W29","2026-W30","2026-W31","2026-W32","2026-W33","2026-W34","2026-W35","2026-W36","2026-W37"];
@@ -1100,7 +1099,7 @@ function FilterBar({selectedYear,setSelectedYear,selectedDepots,setSelectedDepot
 // ─── DEPOT CARD ─────────────────────────────────────────────────────
 function DepotCard({depot,weekData}) {
   const latest=weekData.length>0?weekData[weekData.length-1]:null;const cfg=getStatusConfig(latest);
-  const up=UPSTREAM_DATA.find(u=>u.depot===depot);const upPct=up&&up.total>0?Math.round(((up.total-up.ctrl)/up.total)*100):null;
+  const upPct=latest&&latest.ftfdf>0&&latest.fondCtrl!=null?Math.round(Math.max(0,(latest.ftfdf-latest.fondCtrl))/latest.ftfdf*100):null;
   return (
     <div style={{background:cfg.bg,border:`1px solid ${cfg.border}30`,borderRadius:10,padding:"16px 18px",borderLeft:`3px solid ${cfg.border}`,position:"relative",overflow:"hidden"}}>
       <div style={{position:"absolute",top:0,right:0,background:`${cfg.border}18`,color:cfg.text,fontSize:8,fontWeight:700,padding:"3px 10px",borderBottomLeftRadius:6,fontFamily:"'DM Mono',monospace",letterSpacing:1.5,textTransform:"uppercase"}}>{cfg.icon} {cfg.label}</div>
@@ -1293,7 +1292,35 @@ function DashboardInner() {
     });
   }, [selectedDepots, selectedYear, effectiveFrom, effectiveTo]);
 
-  const filteredUpstream = useMemo(() => UPSTREAM_DATA.filter(d => selectedDepots.includes(d.depot)), [selectedDepots]);
+  // ── Upstream vs Controllable: FTFDF = FOND ops-controllable (DSP) + resto (upstream / no controlable) ──
+  //    Media de las semanas del rango ponderada por pedidos (PRODUCTIVITY) cuando existen; si no, media simple.
+  const upstreamData = useMemo(() => {
+    const wOrders = (d, r) => (PRODUCTIVITY[d]||[]).find(x => x.year===r.year && x.week===r.week)?.orders || 1;
+    const out = [];
+    selectedDepots.forEach(d => {
+      const rows = (ALL_DEPOT_DATA[d]||[]).filter(r => fullFilter(r) && r.ftfdf!=null && r.fondCtrl!=null);
+      if (!rows.length) return;
+      let wsum=0, f=0, c=0;
+      rows.forEach(r => { const w=wOrders(d,r); wsum+=w; f+=r.ftfdf*w; c+=r.fondCtrl*w; });
+      const total=+(f/wsum).toFixed(2), ctrl=+(c/wsum).toFixed(2);
+      out.push({ depot:d, ctrl, upstream:+Math.max(0,total-ctrl).toFixed(2), total, weeks:rows.length });
+    });
+    return out;
+  }, [selectedDepots, selectedYear, effectiveFrom, effectiveTo]);
+  const allSelected = selectedDepots.length === ALL_DEPOTS.length;
+  const upstreamAgg = useMemo(() => {
+    // agregado de las estaciones seleccionadas, ponderado por pedidos del rango
+    let wsum=0, f=0, c=0;
+    selectedDepots.forEach(d => {
+      (ALL_DEPOT_DATA[d]||[]).filter(r => fullFilter(r) && r.ftfdf!=null && r.fondCtrl!=null).forEach(r => {
+        const w=(PRODUCTIVITY[d]||[]).find(x => x.year===r.year && x.week===r.week)?.orders || 1;
+        wsum+=w; f+=r.ftfdf*w; c+=r.fondCtrl*w;
+      });
+    });
+    if (!wsum) return null;
+    const total=f/wsum, ctrl=c/wsum, up=Math.max(0,total-ctrl);
+    return { total:+total.toFixed(2), ctrl:+ctrl.toFixed(2), upstream:+up.toFixed(2), pct: total>0?Math.round(up/total*100):0 };
+  }, [selectedDepots, selectedYear, effectiveFrom, effectiveTo]);
   const latestByDepot = useMemo(() => { const o={}; selectedDepots.forEach(d=>{const r=filteredDepotData[d]||[];o[d]=r.length>0?r[r.length-1]:null;}); return o; }, [filteredDepotData,selectedDepots]);
   const latestWeekLabel = useMemo(() => { const all=Object.values(latestByDepot).filter(Boolean); if (!all.length) return effectiveTo; const best=all.reduce((a,b)=>sortKey(a.year,a.week)>sortKey(b.year,b.week)?a:b); return selectedYear==="ALL"?`${best.week}'${String(best.year).slice(2)}`:best.week; }, [latestByDepot,effectiveTo,selectedYear]);
 
@@ -1610,29 +1637,31 @@ function DashboardInner() {
         {/* UPSTREAM */}
         {selectedView==="upstream"&&(<>
           <div style={{background:"linear-gradient(135deg,#451a03 0%,#0f172a 100%)",border:"1px solid #d9770630",borderRadius:10,padding:"24px 28px",marginBottom:24,textAlign:"center"}}>
-            <div style={{fontSize:10,color:"#fbbf24",fontFamily:"'DM Mono',monospace",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>{t("networkFtfdf")} — W51/2025</div>
+            <div style={{fontSize:10,color:"#fbbf24",fontFamily:"'DM Mono',monospace",letterSpacing:2,textTransform:"uppercase",marginBottom:8}}>{allSelected?t("networkFtfdf"):`FTFDF — ${selectedDepots.join(", ")}`} — {effectiveFrom}{effectiveFrom!==effectiveTo?`–${effectiveTo}`:""} / {yearLabel}</div>
+            {upstreamAgg ? (
             <div style={{display:"flex",justifyContent:"center",alignItems:"baseline",gap:isMobile?12:20,flexWrap:"wrap"}}>
-              <div><div style={{fontSize:isMobile?28:40,fontWeight:800,color:"#fbbf24",fontFamily:"'Outfit',sans-serif"}}>64%</div><div style={{fontSize:10,color:"#92400e",fontFamily:"'DM Mono',monospace"}}>{t("upstream")}</div></div>
+              <div><div style={{fontSize:isMobile?28:40,fontWeight:800,color:"#fbbf24",fontFamily:"'Outfit',sans-serif"}}>{upstreamAgg.pct}%</div><div style={{fontSize:10,color:"#92400e",fontFamily:"'DM Mono',monospace"}}>{t("upstream")}</div></div>
               <div style={{fontSize:20,color:"#475569"}}>|</div>
-              <div><div style={{fontSize:22,fontWeight:700,color:"#94a3b8",fontFamily:"'Outfit',sans-serif"}}>2.44%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("total")}</div></div>
+              <div><div style={{fontSize:22,fontWeight:700,color:"#94a3b8",fontFamily:"'Outfit',sans-serif"}}>{upstreamAgg.total}%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("total")}</div></div>
               <div style={{fontSize:14,color:"#475569"}}>=</div>
-              <div><div style={{fontSize:22,fontWeight:700,color:"#22c55e",fontFamily:"'Outfit',sans-serif"}}>0.86%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("dspCtrl")}</div></div>
+              <div><div style={{fontSize:22,fontWeight:700,color:"#22c55e",fontFamily:"'Outfit',sans-serif"}}>{upstreamAgg.ctrl}%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("dspCtrl")}</div></div>
               <div style={{fontSize:14,color:"#475569"}}>+</div>
-              <div><div style={{fontSize:22,fontWeight:700,color:"#ef4444",fontFamily:"'Outfit',sans-serif"}}>1.58%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("upstream")}</div></div>
-            </div>
+              <div><div style={{fontSize:22,fontWeight:700,color:"#ef4444",fontFamily:"'Outfit',sans-serif"}}>{upstreamAgg.upstream}%</div><div style={{fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace"}}>{t("upstream")}</div></div>
+            </div>) : <div style={{fontSize:11,color:"#94a3b8",fontFamily:"'DM Mono',monospace",padding:"10px 0"}}>— no FTFDF data in range —</div>}
           </div>
           <div style={{background:"#0f172a",border:"1px solid #1e293b",borderRadius:10,padding:"20px",marginBottom:24}}>
-            <h3 style={{fontSize:11,fontWeight:700,color:"#64748b",margin:"0 0 16px",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase"}}>{t("ftfdfBreakdown")}</h3>
+            <h3 style={{fontSize:11,fontWeight:700,color:"#64748b",margin:"0 0 16px",fontFamily:"'DM Mono',monospace",letterSpacing:1,textTransform:"uppercase"}}>{t("ftfdfBreakdown")} — {effectiveFrom}{effectiveFrom!==effectiveTo?`–${effectiveTo}`:""} / {yearLabel}</h3>
             <ResponsiveContainer width="100%" height={isMobile?220:280}>
-              <BarChart data={filteredUpstream} margin={{top:5,right:isMobile?10:30,bottom:5,left:0}} barSize={isMobile?28:40}>
+              <BarChart data={upstreamData} margin={{top:5,right:isMobile?10:30,bottom:5,left:0}} barSize={isMobile?28:40}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b"/>
                 <XAxis dataKey="depot" tick={{fill:"#94a3b8",fontSize:12,fontFamily:"DM Mono",fontWeight:700}} axisLine={{stroke:"#1e293b"}}/>
                 <YAxis tick={{fill:"#475569",fontSize:9,fontFamily:"DM Mono"}} axisLine={{stroke:"#1e293b"}} tickFormatter={v=>`${v}%`}/>
                 <Tooltip content={<ChartTooltip/>}/>
                 <Bar dataKey="ctrl" stackId="a" fill="#22c55e" name="DSP Controllable"/>
-                <Bar dataKey="upstream" stackId="a" fill="#ef4444" name="Upstream" radius={[4,4,0,0]} opacity={0.7}/>
+                <Bar dataKey="upstream" stackId="a" fill="#ef4444" name="Upstream / non-controllable" radius={[4,4,0,0]} opacity={0.7}/>
               </BarChart>
             </ResponsiveContainer>
+            <div style={{marginTop:10,fontSize:9,color:"#475569",fontFamily:"'DM Mono',monospace",lineHeight:1.6}}>DSP controllable = FOND ops-controllable. Upstream / non-controllable = FTFDF − FOND ops-controllable (customer-caused FOND, PSC, FDNR, FTDC). Values are averages over the selected weeks, weighted by orders.</div>
           </div>
         </>)}
 
